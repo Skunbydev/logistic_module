@@ -1,7 +1,35 @@
 <?php
 include './includes/conexao_BD.php';
 $ConexaoMy = DBConnectMy();
+$email_cliente = $_GET['email_cliente'];
+$senha_cliente = $_GET['senha_cliente'];
+echo '<pre>';
+print_r($email_cliente);
+echo '<br>';
+print_r($senha_cliente);
+echo '</pre>';
+exit();
+$sql = "SELECT email_cliente, senha_cliente FROM clientes WHERE id_cliente = 1";
+$result = mysqli_query($ConexaoMy, $sql);
+
+if ($result) {
+  $row = mysqli_fetch_assoc($result);
+  if ($row) {
+    if ($email_cliente == $row['email_cliente'] && $senha_cliente == $row['senha_cliente']) {
+      echo 'Login bem sucedido';
+      header('location:');
+    } else {
+      echo 'Email ou senha incorretos';
+    }
+  } else {
+    echo 'Usuário não encontrado';
+  }
+} else {
+  echo 'Erro na consulta SQL: ' . mysqli_error($ConexaoMy);
+}
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
