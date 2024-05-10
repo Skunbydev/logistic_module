@@ -7,7 +7,7 @@ $ConexaoMy = DBConnectMy();
 if (isset($_POST["metodo"]) == "Logar") {
   $email_cliente = $_POST['email_cliente'];
   $senha_cliente = $_POST['senha_cliente'];
-  $sql = "SELECT email_cliente, senha_cliente FROM clientes WHERE id_cliente = 1";
+  $sql = "SELECT *, email_cliente, senha_cliente FROM clientes";
   $result = mysqli_query($ConexaoMy, $sql);
 
   if ($result) {
@@ -15,7 +15,7 @@ if (isset($_POST["metodo"]) == "Logar") {
     if ($row) {
       if ($email_cliente == $row['email_cliente'] && $senha_cliente == $row['senha_cliente']) {
         $arRetorno[0] = 1;
-        $arRetorno[1] = "ola";
+        $arRetorno[1] = "Login bem sucedido!";
         $_SESSION["login_cliente_auth"] = "1";
       } else {
         $arRetorno[0] = "0";
@@ -73,9 +73,8 @@ if (isset($_POST["metodo"]) == "Logar") {
       </div>
     </div>
   </nav>
-
+  <?php include './includes/scripts/script.php'; ?>
   <div class="modal fade" id="modalLogin" tabindex="-1" aria-labelledby="modalLogin" aria-hidden="true">
-
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header bg-primary text-white">
@@ -132,9 +131,90 @@ if (isset($_POST["metodo"]) == "Logar") {
         </div>
       </div>
     </div>
-    <?php include './includes/scripts/script.php'; ?>
   </div>
 
+  <div class="conteudo-primario-login">
+    <div class="container px-5">
+      <div class="row gx-5 align-items-center">
+        <div class="col-lg-6">
+          <div class="mb-5 mb-lg-0 text-center text-lg-start">
+            <h1 class="display-1 1h-1 mb-3 text-font-lg">A Líder em Logística</h1>
+            <p class="lead fw-normal text-muted mb-5 text-font-md">Desde sua fundação em 2003, a EvilCorp tem sido uma força pioneira no setor de logística. Ao longo dos anos, consolidamos nossa posição como líder de mercado, oferecendo soluções abrangentes e eficientes para uma variedade de necessidades logísticas.</p>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="conteudo-photo">
+            <div class="imagem-wrapper">
+              <img src="./includes/img/logo_tela_inicio.svg" alt="Logo Tela Início">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <aside class="text-center bg-gradient-primary-to-secondary" style="padding-top: 5rem; padding-bottom: 5rem;">
+    <div class="container px-5">
+      <div class="row gx-5 justify-content-center">
+        <div class="col-xl-8">
+          <blockquote class="h2 fs-1 text-white mb-4">
+            "Simplesmente incrível! Utilizei os serviços da EvilCorp para enviar um pacote internacionalmente e fiquei extremamente impressionada com a eficiência e profissionalismo da equipe."
+          </blockquote>
+          <img src="./includes/img/evil_corp_logo.png" alt="logo da empresa" style="height: 7rem">
+        </div>
+      </div>
+    </div>
+  </aside>
+  <section id="servicos" style="padding-top: 5rem; padding-bottom: 5rem; background-color: #f9f9f9;">
+    <div class="container px-5">
+      <div class="row gx-5 align-items-center">
+        <div class="col-lg-8 order-lg-1 mb-5 mb-lg-0">
+          <div class="container-fluid px-5">
+            <div class="row gx-5">
+              <div class="col-md-6 mb-5">
+                <div class="text-center p-4 rounded bg-white shadow-sm">
+                  <i class="bi bi-amazon text-primary fs-2 mb-3"></i>
+                  <h3 class="font-alt mb-3">Parceria Estratégica com a Amazon</h3>
+                  <p class="text-muted">Trabalhamos em estreita colaboração com a Amazon para garantir que nossos clientes desfrutem de acesso privilegiado aos melhores serviços e recursos disponíveis.</p>
+                </div>
+              </div>
+              <div class="col-md-6 mb-5">
+                <div class="text-center p-4 rounded bg-white shadow-sm">
+                  <i class="bi bi-amazon text-primary fs-2 mb-3"></i>
+                  <h3 class="font-alt mb-3">Amplie seus Horizontes com a EvilCorp</h3>
+                  <p class="text-muted">Através da nossa parceria com a Amazon, oferecemos soluções logísticas integradas para atender às suas necessidades mais complexas, proporcionando tranquilidade e eficiência em cada etapa do processo.</p>
+                </div>
+              </div>
+              <div class="col-md-6 mb-5">
+                <div class="text-center p-4 rounded bg-white shadow-sm">
+                  <i class="bi bi-amazon text-primary fs-2 mb-3"></i>
+                  <h3 class="font-alt mb-3">Experiência Logística de Primeira Classe</h3>
+                  <p class="text-muted">Nosso compromisso com a excelência logística é reforçado pela nossa colaboração com a Amazon, permitindo-nos oferecer serviços de primeira classe que superam as expectativas dos nossos clientes.</p>
+                </div>
+              </div>
+              <div class="col-md-6 mb-5">
+                <div class="text-center p-4 rounded bg-white shadow-sm">
+                  <i class="bi bi-amazon text-primary fs-2 mb-3"></i>
+                  <h3 class="font-alt mb-3">Inovação e Eficiência em Logística</h3>
+                  <p class="text-muted">Como parceiros da Amazon, estamos constantemente inovando e aprimorando nossos serviços para oferecer soluções logísticas de ponta que impulsionam o crescimento e o sucesso dos nossos clientes.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 order-lg-0">
+          <div class="text-center">
+            <img src="./includes/img/feature_logo_principal.svg" alt="Logo EvilCorp" width="250">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+  <?php include './includes/scripts/script.php'; ?>
   <script>
     function Logar() {
       if ($("#email_cliente").val() == "" || $("#email_cliente").val() == null) {
@@ -167,7 +247,6 @@ if (isset($_POST["metodo"]) == "Logar") {
             var arRetorno = JSON.parse(retorno);
             alert(arRetorno[1]);
             if (arRetorno[0] == 1) {
-              alert('Login bem-sucedido');
               window.location = ('home.php');
             } else {
               console.log('Falha no login');

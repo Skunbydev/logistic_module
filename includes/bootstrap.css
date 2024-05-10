@@ -1,7 +1,46 @@
 body {
-  background-color: pink;
+  background-color: #fff;
+  font-family: "Newsreader", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.text-font-lg {
+  font-weight: 600 !important;
+  line-height: 1.2;
+}
+.text-font-md {
+  font-weight: 500 !important;
 }
 
 #navbar-Index {
-  background-color: #f8f9fa;
+  background-color: #fff;
 }
+
+.conteudo-primario-login {
+  padding-top: 9.5rem;
+  background-color: #f8f9fa;
+  padding-bottom: 5rem;
+}
+
+.imagem-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.imagem-wrapper:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.imagem-wrapper img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.bg-gradient-primary-to-secondary {
+  background: linear-gradient(45deg, #2937f0, #9f1ae2) !important;
+}
+
+

@@ -11,8 +11,6 @@ function DBConnectMy()
     return $link;
   }
 }
-
-
 function DBClose($Conexao)
 {
   @mysqli_close($Conexao);
