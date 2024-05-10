@@ -4,8 +4,7 @@ session_name("login_cliente");
 include './includes/conexao_BD.php';
 $ConexaoMy = DBConnectMy();
 
-
-if ($_POST["metodo"] == "Logar") {
+if (isset($_POST["metodo"]) == "Logar") {
   $email_cliente = $_POST['email_cliente'];
   $senha_cliente = $_POST['senha_cliente'];
   $sql = "SELECT email_cliente, senha_cliente FROM clientes WHERE id_cliente = 1";
@@ -15,16 +14,15 @@ if ($_POST["metodo"] == "Logar") {
     $row = mysqli_fetch_assoc($result);
     if ($row) {
       if ($email_cliente == $row['email_cliente'] && $senha_cliente == $row['senha_cliente']) {
-        // Login bem-sucedido
         $arRetorno[0] = 1;
-        $arRetorno[1] = "Login bem sucedido";
-        // Redireciona para home.php
-        header('location: home.php');
-        exit; // Certifica-se de que o script seja interrompido após o redirecionamento
+        $arRetorno[1] = "ola";
+        $_SESSION["login_cliente_auth"] = "1";
       } else {
-        // Login falhou
         $arRetorno[0] = "0";
+        $_SESSION["login_cliente_auth"] = "0";
         $arRetorno[1] = "Login falhou. Email ou senha incorretos.";
+
+
       }
     } else {
       $arRetorno[0] = "0";
@@ -34,13 +32,9 @@ if ($_POST["metodo"] == "Logar") {
     $arRetorno[0] = "0";
     $arRetorno[1] = "Erro na consulta SQL: " . mysqli_error($ConexaoMy);
   }
-
   // Retorna os dados JSON para o JavaScript
   die(json_encode($arRetorno));
 }
-
-
-
 ?>
 
 
@@ -81,6 +75,7 @@ if ($_POST["metodo"] == "Logar") {
   </nav>
 
   <div class="modal fade" id="modalLogin" tabindex="-1" aria-labelledby="modalLogin" aria-hidden="true">
+
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header bg-primary text-white">
@@ -141,13 +136,9 @@ if ($_POST["metodo"] == "Logar") {
   </div>
 
   <script>
-
-
-
     function Logar() {
-
       if ($("#email_cliente").val() == "" || $("#email_cliente").val() == null) {
-        alert("Informe o  email, por gentileza.");
+        alert("Informe o email, por gentileza.");
         $("#email_cliente").focus();
         return false;
       }
@@ -176,13 +167,10 @@ if ($_POST["metodo"] == "Logar") {
             var arRetorno = JSON.parse(retorno);
             alert(arRetorno[1]);
             if (arRetorno[0] == 1) {
-              "<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Logar=" + JSON.stringify
-              console.log('passou por aqui');
-            } else if (arRetorno[0] == "9999") {
-              console.log('usuário quer deslogar');
+              alert('Login bem-sucedido');
+              window.location = ('home.php');
             } else {
-              console.log(arRetorno);
-              console.log(retorno);
+              console.log('Falha no login');
             }
           } catch (erro) {
             alert('deu erro');
@@ -191,17 +179,13 @@ if ($_POST["metodo"] == "Logar") {
           }
         }
       });
+
+      return false; // Impede o envio padrão do formulário
     }
-    console.log($.ajax());
-    function enviarEmail(email) {
-      if ($("#email_recuperacao").val() == "" || $("#email_recuperacao").val() == null) {
-        alert("Informe o email!");
-        $("#email_recuperacao").focus();
-        return false;
-      }
-    }
+
   </script>
 
 </body>
 
 </html>
+<?php DBClose($ConexaoMy); ?>
