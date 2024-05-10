@@ -1,32 +1,45 @@
 <?php
+session_name("login_cliente");
+@session_start();
 include './includes/conexao_BD.php';
 $ConexaoMy = DBConnectMy();
-$email_cliente = $_GET['email_cliente'];
-$senha_cliente = $_GET['senha_cliente'];
-echo '<pre>';
-print_r($email_cliente);
-echo '<br>';
-print_r($senha_cliente);
-echo '</pre>';
-exit();
-$sql = "SELECT email_cliente, senha_cliente FROM clientes WHERE id_cliente = 1";
-$result = mysqli_query($ConexaoMy, $sql);
 
-if ($result) {
-  $row = mysqli_fetch_assoc($result);
-  if ($row) {
-    if ($email_cliente == $row['email_cliente'] && $senha_cliente == $row['senha_cliente']) {
-      echo 'Login bem sucedido';
-      header('location:');
+
+if ($_POST["metodo"] == "Logar") {
+  $email_cliente = $_POST['email_cliente'];
+  $senha_cliente = $_POST['senha_cliente'];
+  $sql = "SELECT email_cliente, senha_cliente FROM clientes WHERE id_cliente = 1";
+  $result = mysqli_query($ConexaoMy, $sql);
+
+  if ($result) {
+    $row = mysqli_fetch_assoc($result);
+    if ($row) {
+      if ($email_cliente == $row['email_cliente'] && $senha_cliente == $row['senha_cliente']) {
+        // Login bem-sucedido
+        $arRetorno[0] = 1;
+        $arRetorno[1] = "Login bem sucedido";
+        // Redireciona para home.php
+        header('location: home.php');
+        exit; // Certifica-se de que o script seja interrompido após o redirecionamento
+      } else {
+        // Login falhou
+        $arRetorno[0] = "0";
+        $arRetorno[1] = "Login falhou. Email ou senha incorretos.";
+      }
     } else {
-      echo 'Email ou senha incorretos';
+      $arRetorno[0] = "0";
+      $arRetorno[1] = "Usuário não encontrado";
     }
   } else {
-    echo 'Usuário não encontrado';
+    $arRetorno[0] = "0";
+    $arRetorno[1] = "Erro na consulta SQL: " . mysqli_error($ConexaoMy);
   }
-} else {
-  echo 'Erro na consulta SQL: ' . mysqli_error($ConexaoMy);
+
+  // Retorna os dados JSON para o JavaScript
+  die(json_encode($arRetorno));
 }
+
+
 
 ?>
 
@@ -81,19 +94,18 @@ if ($result) {
                 <img src="./includes/img/logistic_image.svg" alt="Imagem de login" class="img-fluid shadow">
               </div>
               <div class="col-md-6">
-                <form>
-                  <div class="mb-3">
-                    <label for="email_cliente" class="form-label">Endereço de email</label>
-                    <input type="email" class="form-control" id="email_cliente" aria-describedby="emailHelp" placeholder="email@email.com" name="email_cliente">
-                    <div id="emailHelp" class="form-text">Nunca compartilharemos seu email com ninguém.</div>
-                  </div>
-                  <div class="mb-3">
-                    <label for="senha_cliente" class="form-label">Senha</label>
-                    <input type="password" class="form-control" id="senha_cliente" name="senha_cliente" placeholder="******">
-                  </div>
-                  <button type="submit" class="btn btn-primary" onclick="entrarIndex()">Entrar</button>
-                  <button type="button" class="btn btn-secondary" data-bs-target="#modalRecuperarSenha" data-bs-toggle="modal">Recuperar senha</button>
-                </form>
+                <div class="mb-3">
+                  <label for="email_cliente" class="form-label">Endereço de email</label>
+                  <input type="email" class="form-control" id="email_cliente" aria-describedby="emailHelp" placeholder="email@email.com" name="email_cliente">
+
+                  <div id="emailHelp" class="form-text">Nunca compartilharemos seu email com ninguém.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="senha_cliente" class="form-label">Senha</label>
+                  <input type="password" class="form-control" id="senha_cliente" name="senha_cliente" placeholder="******">
+                </div>
+                <button type="submit" class="btn btn-primary" onclick="Logar()">Entrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-target="#modalRecuperarSenha" data-bs-toggle="modal">Recuperar senha</button>
               </div>
             </div>
           </div>
@@ -130,9 +142,57 @@ if ($result) {
 
   <script>
 
-    function entrarIndex() {
-      console.log('oi');
+
+
+    function Logar() {
+
+      if ($("#email_cliente").val() == "" || $("#email_cliente").val() == null) {
+        alert("Informe o  email, por gentileza.");
+        $("#email_cliente").focus();
+        return false;
+      }
+      if ($("#senha_cliente").val() == "" || $("#senha_cliente").val() == null) {
+        alert("Informe a senha, por gentileza.");
+        $("#senha_cliente").focus();
+        return false;
+      }
+      var parametros = new FormData();
+      parametros.append("metodo", "Logar");
+      parametros.append("email_cliente", $("#email_cliente").val());
+      parametros.append("senha_cliente", $("#senha_cliente").val());
+
+      $.ajax({
+        type: "POST",
+        url: '<?php echo $_SERVER['PHP_SELF']; ?>',
+        data: parametros,
+        contentType: false,
+        processData: false,
+        beforeSend: function () {
+          $('#div_loading_modal_login').show();
+        },
+        success: function (retorno) {
+          $('#div_loading_modal_login').hide();
+          try {
+            var arRetorno = JSON.parse(retorno);
+            alert(arRetorno[1]);
+            if (arRetorno[0] == 1) {
+              "<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Logar=" + JSON.stringify
+              console.log('passou por aqui');
+            } else if (arRetorno[0] == "9999") {
+              console.log('usuário quer deslogar');
+            } else {
+              console.log(arRetorno);
+              console.log(retorno);
+            }
+          } catch (erro) {
+            alert('deu erro');
+            console.log(erro);
+            console.log(retorno);
+          }
+        }
+      });
     }
+    console.log($.ajax());
     function enviarEmail(email) {
       if ($("#email_recuperacao").val() == "" || $("#email_recuperacao").val() == null) {
         alert("Informe o email!");
