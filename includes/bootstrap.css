@@ -42,19 +42,69 @@ body {
 .bg-gradient-primary-to-secondary {
   background: linear-gradient(45deg, #2937f0, #9f1ae2) !important;
 }
-
+.rede_proxima_img {
+  width: 100%;
+  max-width: 620px;
+  display: block;
+  border-radius: 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.rede_proxima_img:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.2);
+}
 .contato-comercial {
   margin-top: 5rem;
-  background-image: url('https://blog.vetoreditora.com.br/wp-content/uploads/2021/06/iris-recursos.jpg'); /* Substitua 'sua-imagem-de-fundo.jpg' pelo caminho para sua imagem */
+  background-image: url('./img/imagem_footer.svg');
   background-size: cover;
   background-position: center;
   height: 40vh;
-}
-.cta-content {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
 }
 
+.footer-content {
+  text-align: center;
+}
+
+.footer-content h2 {
+  font-size: 3.5rem;
+  color: #fff; 
+}
+
+.contato-comercial .container {
+  background-color: rgba(0, 0, 0, 0.5); 
+  padding: 20px; 
+  border-radius: 10px; 
+}
+CONTATO COM QUADRADO NO FINAL  
+.footer-contato-link {
+  transition: background-color 0.3s, color 0.3s;
+  padding: 10px 15px;
+  border-radius: 10px;
+}
+
+.footer-contato-link:hover {
+  background-color: rgba(255, 255, 255, 0.1); 
+  color: #ffffff; 
+}
+
+/* .footer-content-link {
+  transition: margin-top 0.3s; 
+}
+
+.footer-content-link:hover {
+  margin-bottom: -10px; 
+} */
+
+
+@media (max-width: 710px) {
+  .footer-content h2 {
+    font-size: 1.5rem;
+  }
+  .contato-comercial .container {
+    padding: 10px;
+  }
+}
 

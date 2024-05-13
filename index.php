@@ -178,21 +178,21 @@ if (isset($_POST["metodo"]) == "Logar") {
               </div>
               <div class="col-md-6 mb-5">
                 <div class="text-center p-4 rounded bg-white shadow-sm">
-                  <i class="bi bi-amazon text-primary fs-2 mb-3"></i>
+                  <i class="bi bi-arrows-angle-expand text-primary fs-2 mb-3"></i>
                   <h3 class="font-alt mb-3">Amplie seus Horizontes com a EvilCorp</h3>
                   <p class="text-muted">Através da nossa parceria com a Amazon, oferecemos soluções logísticas integradas para atender às suas necessidades mais complexas, proporcionando tranquilidade e eficiência em cada etapa do processo.</p>
                 </div>
               </div>
               <div class="col-md-6 mb-5">
                 <div class="text-center p-4 rounded bg-white shadow-sm">
-                  <i class="bi bi-amazon text-primary fs-2 mb-3"></i>
+                  <i class="bi bi-box-seam text-primary fs-2 mb-3"></i>
                   <h3 class="font-alt mb-3">Experiência Logística de Primeira Classe</h3>
                   <p class="text-muted">Nosso compromisso com a excelência logística é reforçado pela nossa colaboração com a Amazon, permitindo-nos oferecer serviços de primeira classe que superam as expectativas dos nossos clientes.</p>
                 </div>
               </div>
               <div class="col-md-6 mb-5">
                 <div class="text-center p-4 rounded bg-white shadow-sm">
-                  <i class="bi bi-amazon text-primary fs-2 mb-3"></i>
+                  <i class="bi bi-lightbulb-fill text-primary fs-2 mb-3"></i>
                   <h3 class="font-alt mb-3">Inovação e Eficiência em Logística</h3>
                   <p class="text-muted">Como parceiros da Amazon, estamos constantemente inovando e aprimorando nossos serviços para oferecer soluções logísticas de ponta que impulsionam o crescimento e o sucesso dos nossos clientes.</p>
                 </div>
@@ -212,7 +212,7 @@ if (isset($_POST["metodo"]) == "Logar") {
     <div class="container px-5">
       <div class="row gx-5 align-items-center justify-content-center justify-content-lg-between">
         <div class="col-12 col-lg-5">
-          <h2 class="display-4 1h-1 mb-4" style="margin-top: 5rem">
+          <h2 class="display-4 lh-1 mb-4" style="margin-top: 5rem;">
             Encontre nossa agência mais próxima
           </h2>
           <p class="lead fw-normal text-muted mb-5 mb-lg-0">
@@ -221,26 +221,40 @@ if (isset($_POST["metodo"]) == "Logar") {
         </div>
         <div class="col-sm-8 col-md-6">
           <div class="px-5 px-sm-0">
-            <img src="https://img.freepik.com/vetores-premium/ilustracao-em-vetor-teste-trabalho-e-exame_138676-243.jpg" alt="">
+            <img src="./includes/img/rede_proxima.svg" alt="Rede Próxima" class="rede_proxima_img">
           </div>
         </div>
       </div>
     </div>
   </section>
   <section class="contato-comercial">
-    <div class="cta-content">
-      <div class="container px-5">
-        <h2 class="text-black display-1 lh-1 mb-4">
+    <div class="container px-5">
+      <div class="footer-content">
+        <h2 class="text-white display-1 lh-1 mb-4">
           Pare de perder tempo, entre em contato com o nosso comercial
         </h2>
       </div>
     </div>
   </section>
-
-
-
-
-
+  <section class="bg-gradient-primary-to-secondary py-5">
+    <div class="container px-5">
+      <h2 class="text-center text-white font-alt mb-4">Nossos contatos</h2>
+      <div class="d-flex flex-column flex-lg-row align-items-center justify-content-center">
+        <a href="https://www.instagram.com/skunbydev" class="footer-contato-link text-white me-lg-4 mb-3 mb-lg-0 text-decoration-none text-center">
+          <i class="bi bi-instagram fs-3 d-block mb-2"></i>
+          <span>Instagram</span>
+        </a>
+        <a href="https://www.facebook.com/skunbydev" class="footer-contato-link text-white me-lg-4 mb-3 mb-lg-0 text-decoration-none text-center">
+          <i class="bi bi-facebook fs-3 d-block mb-2"></i>
+          <span>Facebook</span>
+        </a>
+        <a href="https://wa.me/5581993466199" class="footer-contato-link text-white text-decoration-none text-center">
+          <i class="bi bi-whatsapp fs-3 d-block mb-2"></i>
+          <span>WhatsApp</span>
+        </a>
+      </div>
+    </div>
+  </section>
   <?php include './includes/scripts/script.php'; ?>
   <script>
     function Logar() {
@@ -286,11 +300,9 @@ if (isset($_POST["metodo"]) == "Logar") {
         }
       });
 
-      return false; // Impede o envio padrão do formulário
+      return false;
     }
-
   </script>
-
 </body>
 
 </html>
