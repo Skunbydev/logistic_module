@@ -43,4 +43,18 @@ body {
   background: linear-gradient(45deg, #2937f0, #9f1ae2) !important;
 }
 
+.contato-comercial {
+  margin-top: 5rem;
+  background-image: url('https://blog.vetoreditora.com.br/wp-content/uploads/2021/06/iris-recursos.jpg'); /* Substitua 'sua-imagem-de-fundo.jpg' pelo caminho para sua imagem */
+  background-size: cover;
+  background-position: center;
+  height: 40vh;
+}
+.cta-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
 

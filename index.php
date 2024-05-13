@@ -32,7 +32,6 @@ if (isset($_POST["metodo"]) == "Logar") {
     $arRetorno[0] = "0";
     $arRetorno[1] = "Erro na consulta SQL: " . mysqli_error($ConexaoMy);
   }
-  // Retorna os dados JSON para o JavaScript
   die(json_encode($arRetorno));
 }
 ?>
@@ -206,6 +205,34 @@ if (isset($_POST["metodo"]) == "Logar") {
             <img src="./includes/img/feature_logo_principal.svg" alt="Logo EvilCorp" width="250">
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="container px-5">
+      <div class="row gx-5 align-items-center justify-content-center justify-content-lg-between">
+        <div class="col-12 col-lg-5">
+          <h2 class="display-4 1h-1 mb-4" style="margin-top: 5rem">
+            Encontre nossa agência mais próxima
+          </h2>
+          <p class="lead fw-normal text-muted mb-5 mb-lg-0">
+            Nossa rede de parceiros abrange diversas localidades, garantindo que você sempre encontre uma agência próxima para atender suas necessidades. Com uma ampla presença geográfica, estamos comprometidos em oferecer conveniência e acessibilidade a todos os nossos clientes. Independentemente de onde você esteja, estamos aqui para fornecer suporte e assistência, garantindo que você receba o serviço de qualidade que merece.
+          </p>
+        </div>
+        <div class="col-sm-8 col-md-6">
+          <div class="px-5 px-sm-0">
+            <img src="https://img.freepik.com/vetores-premium/ilustracao-em-vetor-teste-trabalho-e-exame_138676-243.jpg" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="contato-comercial">
+    <div class="cta-content">
+      <div class="container px-5">
+        <h2 class="text-black display-1 lh-1 mb-4">
+          Pare de perder tempo, entre em contato com o nosso comercial
+        </h2>
       </div>
     </div>
   </section>
