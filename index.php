@@ -65,11 +65,12 @@ if (isset($_POST["metodo"]) == "Logar") {
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto me-4 my-3 my-lg-0">
           <li class="nav-item">
-            <a class="nav-link me-lg-3" href="#Novidades">Novidades</a>
+            <a class="nav-link me-lg-3" href="#servicos">Sobre</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link me-lg-3" href="#Sobre">Sobre</a>
+            <a class="nav-link me-lg-3" href="#contatos" onclick="smoothScroll(event)">Contatos</a>
           </li>
+
         </ul>
         <button class="btn btn-primary rounded-pill px-3 mb-2 mb-lg-0" data-bs-toggle="modal" data-bs-target="#modalLogin">
           <span><i class="bi bi-door-open-fill"></i></span>
@@ -241,7 +242,7 @@ if (isset($_POST["metodo"]) == "Logar") {
       </div>
     </div>
   </section>
-  <section class="bg-gradient-primary-to-secondary py-5">
+  <section class="bg-gradient-primary-to-secondary py-5" id="contatos">
     <div class="container px-5">
       <h2 class="text-center text-white font-alt mb-4">Nossos contatos</h2>
       <div class="d-flex flex-column flex-lg-row align-items-center justify-content-center">
@@ -308,6 +309,29 @@ if (isset($_POST["metodo"]) == "Logar") {
 
       return false;
     }
+    function smoothScroll(event) {
+      event.preventDefault();
+      const targetId = event.target.getAttribute("href").substring(1);
+      const targetElement = document.getElementById(targetId);
+      const startPos = window.pageYOffset;
+      const targetOffset = targetElement.getBoundingClientRect().top;
+      const duration = 500; // duração da animação em milissegundos
+      const startTime = performance.now();
+
+      function scrollAnimation(currentTime) {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+        window.scrollTo(0, startPos + targetOffset * progress);
+
+        if (elapsedTime < duration) {
+          requestAnimationFrame(scrollAnimation);
+        }
+      }
+
+      requestAnimationFrame(scrollAnimation);
+    }
+
+
   </script>
 </body>
 
