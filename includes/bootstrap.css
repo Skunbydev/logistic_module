@@ -113,3 +113,6 @@ html {
   scroll-behavior: smooth;
 }
 
+.card-header {
+  --bs-card-title-spacer-y: 0 !important;
+}
