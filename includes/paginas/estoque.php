@@ -9,8 +9,14 @@ if ($_SESSION["login_cliente_auth"] != "1") {
 include '../conexao_BD.php';
 $ConexaoMy = DBConnectMy();
 
-if ($_POST["metodo"] == 'Salvar') {
+if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
+  $id_produto = $_POST["id_produto"];
   $nome_produto = $_POST["nome_produto"];
+  $descricao_produto = $_POST["descricao_produto"];
+  $valor_produto = $_POST["valor_produto"];
+  $quantidade_produto = $_POST["quantidade_produto"];
+  $codigo_categoria_produto = $_POST["codigo_categoria_produto"];
+
 }
 
 ?>
@@ -50,7 +56,8 @@ if ($_POST["metodo"] == 'Salvar') {
                 <div class="row">
                   <div class="col-md-9">
                     <div class="btn-group gap-2">
-                      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#novoProdutoModal">
+                      <input type="hidden" id="hid_id_produto">
+                      <button type="button" class="btn btn-primary" onclick="Novo()" id="btn_salvar">
                         <i class="bi bi-plus-square"></i> Novo Produto
                       </button>
                       <button type="button" class="btn btn-primary" onclick="PesquisaAvancada()"><i class="bi bi-funnel-fill"></i> FILTRO</button>
@@ -68,7 +75,7 @@ if ($_POST["metodo"] == 'Salvar') {
           </div>
         </div>
       </section>
-      <div class="modal fade" id="novoProdutoModal" tabindex="-1" aria-labelledby="novoProdutoModalLabel" aria-hidden="true">
+      <div class="modal fade" data-remodal-id="novoProdutoModal" data-remodal-options="hashTracking: false, closeOnOutsideClick: false" tabindex="-1" aria-labelledby="novoProdutoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content bg-dark">
             <div class="modal-header">
@@ -123,13 +130,23 @@ if ($_POST["metodo"] == 'Salvar') {
 
   <script>
     $("#valor_produto").mask("#00,00", { reverse: true });
+
+
+    function Novo() {
+      $("#nome_produto").val("");
+      $("#descricao_produto").val("");
+      $("#valor_produto").val("");
+      $("#quantidade_produto").val("");
+      $("#categoria_produto").select2("val", "");
+      $("#btn_salvar").prop("disabled", false);
+
+      GLModalAtual = $('[data-remodal-id=novoProdutoModal]').remodal();
+      GLModalAtual.open();
+    }
+
     function Salvar() {
-      // $("#nome_produto").val("");
-      // $("#descricao_produto").val("");
-      // $("#valor_produto").val("");
-      // $("#quantidade_produto").val("");
-      // // $("#categoria_produto").select2("val", "");
-      // var modal = $('[data-remodal-id=novoProdutoModal]').remodal();
+
+      var modal = $('[data-remodal-id=novoProdutoModal]').remodal();
 
       if ($("#nome_produto").val() == "" || $("#nome_produto").val() == null) {
         alert("Informe o nome do produto");
@@ -163,6 +180,7 @@ if ($_POST["metodo"] == 'Salvar') {
       var parametros = new FormData();
 
       parametros.append("metodo", "Salvar");
+      parametros.append("id_produto", $("#hid_id_produto").val());
       parametros.append("nome_produto", $("#nome_produto").val());
       parametros.append("descricao_produto", $("#descricao_produto").val());
       parametros.append("valor_produto", $("#valor_produto").val());
