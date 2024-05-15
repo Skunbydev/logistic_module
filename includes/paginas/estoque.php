@@ -17,6 +17,29 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
   $quantidade_produto = $_POST["quantidade_produto"];
   $codigo_categoria_produto = $_POST["codigo_categoria_produto"];
 
+  $sql = "INSERT INTO estoque (nome_produto, descricao_produto, valor_produto, quantidade_produto, codigo_categoria_produto)
+  VALUES ('$nome_produto', '$descricao_produto', '$valor_produto', '$quantidade_produto', '$codigo_categoria_produto')";
+
+  $rsAux = mysqli_query($ConexaoMy, utf8_decode($sql));
+  if ($rsAux) {
+    $arRetorno[0] = "1";
+    $arRetorno[1] = "Cadastrado com sucesso";
+    $arRetorno[2] = $sql;
+    DBCLOSE($ConexaoMy);
+    die(json_encode($arRetorno));
+  } else if (!$rsAux) {
+    $arRetorno[0] = "0";
+    $arRetorno[1] = "Deu bug viu";
+    $arRetorno[2] = $sql;
+    DBCLOSE($ConexaoMy);
+    die(json_encode($arRetorno));
+  } else {
+    $arRetorno[0] = "2";
+    $arRetorno[1] = "Debug";
+    $arRetorno[2] = $sql;
+    DBCLOSE($ConexaoMy);
+    die(json_encode($arRetorno));
+  }
 }
 
 ?>
@@ -75,12 +98,12 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
           </div>
         </div>
       </section>
-      <div class="modal fade" data-remodal-id="novoProdutoModal" data-remodal-options="hashTracking: false, closeOnOutsideClick: false" tabindex="-1" aria-labelledby="novoProdutoModalLabel" aria-hidden="true">
+      <div class="modal fade" id="novoProdutoModal" tabindex="-1" aria-labelledby="novoProdutoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content bg-dark">
             <div class="modal-header">
               <h5 class="modal-title" id="novoProdutoModalLabel">Adicionar Novo Produto</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               <form>
@@ -101,8 +124,8 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
                   <input type="number" class="form-control" id="quantidade_produto">
                 </div>
                 <div class="mb-3">
-                  <label for="categoria_produto" class="form-label">Categoria do produto</label>
-                  <select class="form-control select2" data-placeholder="Selecione" data-allow-clear="true" id="categoria_produto" name="categoria_produto" style="width: 100%;">
+                  <label for="codigo_categoria_produto" class="form-label">Categoria do produto</label>
+                  <select class="form-control select2" data-placeholder="Selecione" data-allow-clear="true" id="codigo_categoria_produto" name="codigo_categoria_produto" style="width: 100%;">
                     <option value="">selecione</option>
                     <?php
                     $SQL = "SELECT id_categoria, nome_categoria
@@ -137,16 +160,16 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
       $("#descricao_produto").val("");
       $("#valor_produto").val("");
       $("#quantidade_produto").val("");
-      $("#categoria_produto").select2("val", "");
+      $("#codigo_categoria_produto").select2("val", "");
       $("#btn_salvar").prop("disabled", false);
 
-      GLModalAtual = $('[data-remodal-id=novoProdutoModal]').remodal();
-      GLModalAtual.open();
+      $("#novoProdutoModal").modal("show");
+
     }
 
     function Salvar() {
 
-      var modal = $('[data-remodal-id=novoProdutoModal]').remodal();
+      var modal = $("#novoProdutoModal").modal("show");
 
       if ($("#nome_produto").val() == "" || $("#nome_produto").val() == null) {
         alert("Informe o nome do produto");
@@ -172,9 +195,9 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
         return false;
       }
 
-      if ($("#categoria_produto").val() == "" || $("#categoria_produto").val() == null) {
+      if ($("#codigo_categoria_produto").val() == "" || $("#codigo_categoria_produto").val() == null) {
         alert("Selecione a categoria do produto");
-        $("#categoria_produto").focus();
+        $("#codigo_categoria_produto").focus();
         return false;
       }
       var parametros = new FormData();
@@ -185,7 +208,7 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
       parametros.append("descricao_produto", $("#descricao_produto").val());
       parametros.append("valor_produto", $("#valor_produto").val());
       parametros.append("quantidade_produto", $("#quantidade_produto").val());
-      parametros.append("categoria_produto", $("#categoria_produto").val());
+      parametros.append("codigo_categoria_produto", $("#codigo_categoria_produto").val());
 
       $.ajax({
         type: "POST",

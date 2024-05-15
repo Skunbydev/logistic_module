@@ -132,11 +132,14 @@
         links.forEach(function (link) {
           link.classList.remove('active');
           link.style.color = 'white';
-          if (link.href === window.location.href) {
+          var urlSemHash = window.location.href.split('#')[0];
+          if (link.href === urlSemHash) {
             link.classList.add('active');
           }
         });
       }
+
       window.onload = atualizarLinkAtivo;
+
 
     </script>
