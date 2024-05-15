@@ -9,6 +9,111 @@ if ($_SESSION["login_cliente_auth"] != "1") {
 include '../conexao_BD.php';
 $ConexaoMy = DBConnectMy();
 
+if (isset($_POST["metodo"]) && $_POST["metodo"] === "InativarProduto") {
+  if ((int) $_POST["codigo"] > 0) {
+    $SQL = "UPDATE estoque SET situacao = '0' WHERE id_produto = '" . $_POST["codigo"] . "' ";
+    $rsAux = mysqli_query($ConexaoMy, $SQL);
+  }
+  if ($rsAux) {
+    $arRetorno[0] = "1";
+    $arRetorno[1] = "Produto inativo com sucesso!";
+  } else {
+    $arRetorno[0] = "0";
+    $arRetorno[2] = $sql;
+    $arRetorno[1] = "Não foi possível inativar o Produto!";
+  }
+  die(json_encode($arRetorno));
+}
+
+if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
+  require ('../plugins/datatable_server_side/scripts/ssp.class.php');
+  $SSP = new SSP();
+  $columns = array(
+    array('db' => 'est.id_produto', 'dt' => 0),
+    array('db' => 'est.nome_produto', 'dt' => 1),
+    array('db' => 'est.descricao_produto', 'dt' => 2),
+    array('db' => 'est.valor_produto', 'dt' => 3),
+    array('db' => 'est.quantidade_produto', 'dt' => 4),
+    array('db' => 'est.codigo_categoria_produto', 'dt' => 5),
+  );
+  $bindings = array();
+  $limit = @$SSP->limit($_GET, $columns);
+  $order = @$SSP->order($_GET, $columns);
+  $where = @$SSP->filter($_GET, $columns, $bindings);
+
+  $dados = array();
+  $resTotalLength = 0;
+  $recordsFiltered = 0;
+
+  $SQL = "SELECT est.id_produto, est.nome_produto, est.descricao_produto, est.valor_produto, est.quantidade_produto, est.codigo_categoria_produto, cpr.nome_categoria
+  FROM estoque est
+  LEFT JOIN categoria_produtos cpr ON cpr.codigo_categoria_produto  = est.codigo_categoria_produto
+  WHERE est.situacao = 1";
+
+  $filtro = json_decode($_GET["filtro"]);
+
+  if ((string) $filtro->nome_produto_filtro != "") {
+    $SQL .= " AND  est.nome_produto IN ($filtro->nome_produto_filtro)  ";
+  }
+
+  if ((string) $filtro->descricao_produto_filtro != "") {
+    $SQL .= " AND est.descricao_produto IN ($filtro-> descricao_produto_filtro) ";
+  }
+  if ((string) $filtro->valor_produto_filtro != "") {
+    $SQL .= " AND est.valor_produto IN ($filtro-> valor_produto_filtro) ";
+  }
+  if ((string) $filtro->quantidade_produto_filtro != "") {
+    $SQL .= " AND est.quantidade_produto IN ($filtro-> quantidade_produto_filtro) ";
+  }
+  if ((string) $filtro->codigo_categoria_produto_filtro != "") {
+    $SQL .= " AND est.codigo_categoria_produto IN ($filtro->codigo_categoria_produto_filtro) ";
+  }
+
+
+  $i = 0;
+  $Query = mysqli_query($ConexaoMy, utf8_decode($SQL));
+
+  while ($Aux = mysqli_fetch_assoc($Query)) {
+
+    $valor_produto_formatado = 'R$: ' . $Aux["valor_produto"];
+
+    $link_editar = "<a data-bs-toggle='tooltip' title='Editar Produto' style='cursor:pointer;color:green;'>
+    <i class='bi bi-pencil'></i>
+    </a>";
+
+    $link_detalhe = "<a data-bs-toggle='tooltip' title='Detalhes do Produto' style='cursor:pointer;color:blue;'>
+    <i class='bi bi-search'></i>
+    </a>";
+
+    $link_inativar = "<a data-bs-toggle='tooltip' title='Inativar Produto' onclick='InativarProduto(" . $Aux["id_produto"] . ")' style='cursor:pointer;color:red;'>
+    <i class='bi bi-x'></i>
+</a>";
+
+
+    $dados[$i][] = $link_editar;
+    $dados[$i][] = $link_detalhe;
+    $dados[$i][] = $link_inativar;
+    $dados[$i][] = $Aux["id_produto"];
+    $dados[$i][] = utf8_encode($Aux["nome_produto"]);
+    $dados[$i][] = utf8_encode($Aux["descricao_produto"]);
+    $dados[$i][] = $valor_produto_formatado;
+    $dados[$i][] = $Aux["quantidade_produto"];
+    $dados[$i][] = $Aux["nome_categoria"];
+    $i++;
+  }
+  $recordsTotal = $i;
+  $Arr = array(
+    "draw" => isset($_GET['draw']) ? intval($_GET['draw']) : 0,
+    "recordsTotal" => intval($recordsTotal),
+    "recordsFiltered" => intval($recordsFiltered),
+    "data" => $dados,
+    "linhas" => $i
+  );
+  echo json_encode($Arr);
+  die();
+}
+
+
 if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
   $id_produto = $_POST["id_produto"];
   $nome_produto = $_POST["nome_produto"];
@@ -17,26 +122,26 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
   $quantidade_produto = $_POST["quantidade_produto"];
   $codigo_categoria_produto = $_POST["codigo_categoria_produto"];
 
-  $sql = "INSERT INTO estoque (nome_produto, descricao_produto, valor_produto, quantidade_produto, codigo_categoria_produto)
-  VALUES ('$nome_produto', '$descricao_produto', '$valor_produto', '$quantidade_produto', '$codigo_categoria_produto')";
+  $SQL = "INSERT INTO estoque (nome_produto, descricao_produto, valor_produto, quantidade_produto, codigo_categoria_produto, situacao)
+  VALUES ('$nome_produto', '$descricao_produto', '$valor_produto', '$quantidade_produto', '$codigo_categoria_produto', 1)";
 
-  $rsAux = mysqli_query($ConexaoMy, utf8_decode($sql));
+  $rsAux = mysqli_query($ConexaoMy, utf8_decode($SQL));
   if ($rsAux) {
     $arRetorno[0] = "1";
     $arRetorno[1] = "Cadastrado com sucesso";
-    $arRetorno[2] = $sql;
+    $arRetorno[2] = $SQL;
     DBCLOSE($ConexaoMy);
     die(json_encode($arRetorno));
   } else if (!$rsAux) {
     $arRetorno[0] = "0";
     $arRetorno[1] = "Deu bug viu";
-    $arRetorno[2] = $sql;
+    $arRetorno[2] = $SQL;
     DBCLOSE($ConexaoMy);
     die(json_encode($arRetorno));
   } else {
     $arRetorno[0] = "2";
     $arRetorno[1] = "Debug";
-    $arRetorno[2] = $sql;
+    $arRetorno[2] = $SQL;
     DBCLOSE($ConexaoMy);
     die(json_encode($arRetorno));
   }
@@ -97,6 +202,27 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
             </div>
           </div>
         </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="table-responsive">
+              <table id="tabela_consulta" class="table table-striped table-hover" style="font-size:12px;">
+                <thead>
+                  <tr class="bg-light-blue color-palette">
+                    <th style="width: 1%"></th>
+                    <th style="width: 1%"></th>
+                    <th style="width: 1%"></th>
+                    <th style="width:11%; text-align:center; vertical-align:middle;">Código</th>
+                    <th style="width:11%; text-align:center; vertical-align:middle;">Nome</th>
+                    <th style="width:11%; text-align:center; vertical-align:middle;">Descricao</th>
+                    <th style="width:11%; text-align:center; vertical-align:middle;">Valor</th>
+                    <th style="width:11%; text-align:center; vertical-align:middle;">Quantidade</th>
+                    <th style="width:11%; text-align:center; vertical-align:middle;">Categoria</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+          </div>
+        </div>
       </section>
       <div class="modal fade" id="novoProdutoModal" tabindex="-1" aria-labelledby="novoProdutoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -153,7 +279,169 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
 
   <script>
     $("#valor_produto").mask("#00,00", { reverse: true });
+    var GLTabela = null;
+    var GLFiltro = [];
 
+    GLFiltro = {
+      nome_produto_filtro: "",
+      descricao_produto_filtro: "",
+      valor_produto_filtro: "",
+      quantidade_produto_filtro: "",
+      codigo_categoria_produto_filtro: ""
+    }
+    GLTabela = $('#tabela_consulta').DataTable({
+      "iDisplayLength": 100,
+      "searching": false,
+      "lengthChange": false,
+      "processing": true,
+      "serverSide": true,
+      "ajax": "<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro),
+      "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        $($(nRow).find("td")[0]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[1]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[2]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[3]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[4]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[5]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[6]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[7]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[8]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[9]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+
+      },
+      "fnDrawCallback": function () {
+        $("#div_load_consulta").hide();
+        $("#div_load_filtro").hide();
+      },
+      "preDrawCallback": function (settings) {
+        $("#div_load_consulta").show();
+        $("#div_load_filtro").show();
+      },
+      "initComplete": function (settings, json) {
+        $("#div_load_consulta").hide();
+        $("#div_load_filtro").hide();
+      },
+      "aoColumnDefs": [
+        // Desabilitando Ordenacao coluna
+        {
+          'bSortable': false,
+          'aTargets': [0, 1, 2]
+
+        },
+        // Desabilitando Busca coluna
+        {
+          "bSearchable": false,
+          "aTargets": [0, 1, 2]
+        }
+      ],
+      // Definindo ordenação padrão 3 coluna
+      "order": [
+        [3, "desc"]
+      ],
+      "language": {
+        "lengthMenu": "Exibindo _MENU_ registros por Página",
+        "zeroRecords": "Desculpe - Nenhum registro encontrado",
+        "info": "Exibindo página _PAGE_ de _PAGES_ ( Total de _TOTAL_ Registros )",
+        "infoEmpty": "Não há registros disponiveis",
+        "infoFiltered": "(Exibindo _MAX_ total registros)",
+        "sSearch": "Pesquisar",
+        "oPaginate": {
+          "sNext": "Próximo",
+          "sPrevious": "Anterior",
+          "sFirst": "Primeiro",
+          "sLast": "Último"
+        },
+        "oAria": {
+          "sSortAscending": ": Ordenar colunas de forma ascendente",
+          "sSortDescending": ": Ordenar colunas de forma descendente"
+        }
+      }
+    });
+
+    function Filtrar() {
+      GLFILTRO = {
+        nome_produto_filtro: $("#nome_produto_filtro").val(),
+        descricao_produto_filtro: $("#descricao_produto_filtro").val(),
+        valor_produto_filtro: $("#valor_produto_filtro").val(),
+        quantidade_produto_filtro: $("#quantidade_produto_filtro").val(),
+        codigo_categoria_produto_filtro: $("#codigo_categoria_produto_filtro").val(),
+      }
+      GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
+      if (GLModalAtual != null) {
+        if (GLModalAtual.getState() == "opened") {
+          GLModalAtual.close();
+        }
+      }
+    }
+
+    function InativarProduto(codigo) {
+      $("hid_id_produto").val(codigo);
+      if (confirm("Deseja realmente inativar este registro?")) {
+        var parametros = new FormData();
+        parametros.append("metodo", "InativarProduto");
+        parametros.append("codigo", codigo);
+      }
+      $.ajax({
+        type: "POST",
+        url: '<?php echo $_SERVER['PHP_SELF']; ?>',
+        data: parametros,
+        contentType: false,
+        processData: false,
+        beforeSend: function () {
+          $('#div_load_consulta').show();
+        },
+        success: function (retorno) {
+          $('#div_load_consulta').hide();
+          try {
+            var arRetorno = JSON.parse(retorno);
+            alert(arRetorno[1]);
+
+            if (arRetorno[0] == "1") {
+              GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
+            } else if (arRetorno[0] == "9999") {
+              window.location = '../includes/logout.php';
+            } else {
+              console.log(retorno);
+              console.log(arRetorno);
+            }
+          } catch (erro) {
+            alert("Não foi possível realizar esta operação! Contate a  Skunby Tecnologia (erro 3333).");
+            console.log(retorno);
+            console.log(arRetorno);
+          }
+        }
+      });
+    }
 
     function Novo() {
       $("#nome_produto").val("");
@@ -224,10 +512,10 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
           try {
             var arRetorno = JSON.parse(retorno);
             alert(arRetorno[1]);
-
             if (arRetorno[0] == "1") {
-              modal.close();
-              GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF'] ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
+              $("#novoProdutoModal").hide();
+              GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
+              window.location.reload();
             } else if (arRetorno[0] === 9999) {
               console.log("deslogado, safado");
             } else {
