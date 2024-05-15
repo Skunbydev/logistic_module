@@ -125,7 +125,17 @@
 
     <script>
       function deslogar() {
-        window.location.href = './logout.php';
+        Swal.fire({
+          title: 'Tem certeza que deseja sair?',
+          showCancelButton: true,
+          confirmButtonText: 'Sim',
+          cancelButtonText: 'Não',
+          icon: 'question'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = './logout.php';
+          }
+        });
       }
       function atualizarLinkAtivo() {
         var links = document.querySelectorAll('.nav-link');

@@ -9,6 +9,20 @@ if ($_SESSION["login_cliente_auth"] != "1") {
 include '../conexao_BD.php';
 $ConexaoMy = DBConnectMy();
 
+if (isset($_POST["metodo"]) && $_POST["metodo"] === "Carregar") {
+  $arrayRetornoGeral = array();
+  $SQL = "SELECT * FROM estoque 
+					WHERE id_produto = '" . $_POST["codigo"] . "'";
+
+  $rsDadosEstoque = mysqli_query($ConexaoMy, $SQL);
+  $arDadosEstoque = mysqli_fetch_assoc($rsDadosEstoque);
+  // $arDadosEstoque = array_map($arDadosEstoque);
+
+  $arrayRetornoGeral = $arDadosEstoque;
+  die(json_encode($arrayRetornoGeral));
+
+}
+
 if (isset($_POST["metodo"]) && $_POST["metodo"] === "InativarProduto") {
   if ((int) $_POST["codigo"] > 0) {
     $SQL = "UPDATE estoque SET situacao = '0' WHERE id_produto = '" . $_POST["codigo"] . "' ";
@@ -77,15 +91,16 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
 
     $valor_produto_formatado = 'R$: ' . $Aux["valor_produto"];
 
-    $link_editar = "<a data-bs-toggle='tooltip' title='Editar Produto' style='cursor:pointer;color:green;'>
+    $link_editar = "<a data-bs-toggle='tooltip' title='Editar Produto'  onclick='Carregar(" . $Aux["id_produto"] . ", 1);' style='cursor:pointer; color:green;'>
     <i class='bi bi-pencil'></i>
     </a>";
 
-    $link_detalhe = "<a data-bs-toggle='tooltip' title='Detalhes do Produto' style='cursor:pointer;color:blue;'>
+    $link_detalhe = "<a data-bs-toggle='tooltip' title='Detalhes do Produto'  onclick='Carregar(" . $Aux["id_produto"] . ", 0);' style='cursor:pointer; color:blue;'>
     <i class='bi bi-search'></i>
     </a>";
 
-    $link_inativar = "<a data-bs-toggle='tooltip' title='Inativar Produto' onclick='InativarProduto(" . $Aux["id_produto"] . ")' style='cursor:pointer;color:red;'>
+
+    $link_inativar = "<a data-bs-toggle='tooltip' title='Inativar Produto' onclick='InativarProduto(" . $Aux["id_produto"] . ")' style='cursor:pointer; color:red;'>
     <i class='bi bi-x'></i>
 </a>";
 
@@ -94,8 +109,8 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
     $dados[$i][] = $link_detalhe;
     $dados[$i][] = $link_inativar;
     $dados[$i][] = $Aux["id_produto"];
-    $dados[$i][] = utf8_encode($Aux["nome_produto"]);
-    $dados[$i][] = utf8_encode($Aux["descricao_produto"]);
+    $dados[$i][] = $Aux["nome_produto"];
+    $dados[$i][] = $Aux["descricao_produto"];
     $dados[$i][] = $valor_produto_formatado;
     $dados[$i][] = $Aux["quantidade_produto"];
     $dados[$i][] = $Aux["nome_categoria"];
@@ -122,28 +137,53 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
   $quantidade_produto = $_POST["quantidade_produto"];
   $codigo_categoria_produto = $_POST["codigo_categoria_produto"];
 
-  $SQL = "INSERT INTO estoque (nome_produto, descricao_produto, valor_produto, quantidade_produto, codigo_categoria_produto, situacao)
+  if ($id_produto != "") {
+    $SQL = " UPDATE estoque SET 
+    nome_produto = '$nome_produto', 
+    descricao_produto = '$descricao_produto', 
+    valor_produto = '$valor_produto', 
+    quantidade_produto = '$quantidade_produto', 
+    codigo_categoria_produto = '$codigo_categoria_produto'
+    WHERE id_produto = '$id_produto'";
+
+    $rsAux = mysqli_query($ConexaoMy, $SQL);
+
+    if ($rsAux) {
+      $arRetorno[0] = "1";
+      $arRetorno[1] = "Produto atualizado com sucesso";
+      $arRetorno[2] = $SQL;
+      DBClose($ConexaoMy);
+      die(json_encode($arRetorno));
+    } else if (!$rsAux) {
+      $arRetorno[0] = "0";
+      $arRetorno[1] = "Não foi possível atualizar o produto";
+      $arRetorno[2] = $SQL;
+    }
+  } else {
+
+    $SQL = "INSERT INTO estoque (nome_produto, descricao_produto, valor_produto, quantidade_produto, codigo_categoria_produto, situacao)
   VALUES ('$nome_produto', '$descricao_produto', '$valor_produto', '$quantidade_produto', '$codigo_categoria_produto', 1)";
 
-  $rsAux = mysqli_query($ConexaoMy, utf8_decode($SQL));
-  if ($rsAux) {
-    $arRetorno[0] = "1";
-    $arRetorno[1] = "Cadastrado com sucesso";
-    $arRetorno[2] = $SQL;
-    DBCLOSE($ConexaoMy);
-    die(json_encode($arRetorno));
-  } else if (!$rsAux) {
-    $arRetorno[0] = "0";
-    $arRetorno[1] = "Deu bug viu";
-    $arRetorno[2] = $SQL;
-    DBCLOSE($ConexaoMy);
-    die(json_encode($arRetorno));
-  } else {
-    $arRetorno[0] = "2";
-    $arRetorno[1] = "Debug";
-    $arRetorno[2] = $SQL;
-    DBCLOSE($ConexaoMy);
-    die(json_encode($arRetorno));
+    $rsAux = mysqli_query($ConexaoMy, $SQL);
+    if ($rsAux) {
+      $arRetorno[0] = "1";
+      $arRetorno[1] = "Produto cadastrado com sucesso";
+      $arRetorno[2] = $SQL;
+      DBCLOSE($ConexaoMy);
+      die(json_encode($arRetorno));
+    } else if (!$rsAux) {
+      $arRetorno[0] = "0";
+      $arRetorno[1] = "Não foi possível cadastrar o produto (erro 1111)";
+      $arRetorno[2] = $SQL;
+      DBCLOSE($ConexaoMy);
+      die(json_encode($arRetorno));
+    } else {
+      $arRetorno[0] = "2";
+      $arRetorno[1] = "Debug";
+      $arRetorno[2] = $SQL;
+      DBCLOSE($ConexaoMy);
+      die(json_encode($arRetorno));
+    }
   }
 }
 
@@ -228,7 +268,7 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
         <div class="modal-dialog">
           <div class="modal-content bg-dark">
             <div class="modal-header">
-              <h5 class="modal-title" id="novoProdutoModalLabel">Adicionar Novo Produto</h5>
+              <h5 class="modal-title" id="titulo_modal_novo_produto">Adicionar Novo Produto</h5>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -269,7 +309,7 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="">Fechar</button>
-              <button type="button" class="btn btn-primary" onclick="Salvar()">Cadastrar</button>
+              <button type="button" class="btn btn-primary" id="btn_cadastrar" onclick="Salvar()">Cadastrar</button>
             </div>
           </div>
         </div>
@@ -405,12 +445,69 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
     }
 
     function InativarProduto(codigo) {
-      $("hid_id_produto").val(codigo);
-      if (confirm("Deseja realmente inativar este registro?")) {
-        var parametros = new FormData();
-        parametros.append("metodo", "InativarProduto");
-        parametros.append("codigo", codigo);
+      Swal.fire({
+        title: 'Tem certeza que deseja inativar este registro?',
+        showCancelButton: true,
+        confirmButtonText: 'Sim',
+        cancelButtonText: 'Não',
+        icon: 'question'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          var parametros = new FormData();
+          parametros.append("metodo", "InativarProduto");
+          parametros.append("codigo", codigo);
+
+          $.ajax({
+            type: "POST",
+            url: '<?php echo $_SERVER['PHP_SELF']; ?>',
+            data: parametros,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+              $('#div_load_consulta').show();
+            },
+            success: function (retorno) {
+              $('#div_load_consulta').hide();
+              try {
+                var arRetorno = JSON.parse(retorno);
+                alert(arRetorno[1]);
+
+                if (arRetorno[0] == "1") {
+                  GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
+                } else if (arRetorno[0] == "9999") {
+                  window.location = '../includes/logout.php';
+                } else {
+                  console.log(retorno);
+                  console.log(arRetorno);
+                }
+              } catch (erro) {
+                alert("Não foi possível realizar esta operação! Contate a Skunby Tecnologia (erro 3333).");
+                console.log(retorno);
+                console.log(arRetorno);
+              }
+            }
+          });
+        }
+      });
+    }
+
+    function Carregar(codigo, flag_disabled) {
+      function StringPad(str, pad, length) {
+        str = str.toString(); // Certifique-se de que a entrada é uma string
+        while (str.length < length) {
+          str = pad + str;
+        }
+        return str;
       }
+      var btn = document.getElementById('btn_cadastrar');
+      if (btn.classList.contains('btn-primary')) {
+        btn.innerHTML = 'EDITAR';
+        btn.style.visibility = 'visible';
+      }
+      $("#hid_id_produto").val(codigo);
+      var parametros = new FormData();
+      parametros.append("metodo", "Carregar");
+      parametros.append("codigo", codigo);
       $.ajax({
         type: "POST",
         url: '<?php echo $_SERVER['PHP_SELF']; ?>',
@@ -424,18 +521,23 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
           $('#div_load_consulta').hide();
           try {
             var arRetorno = JSON.parse(retorno);
-            alert(arRetorno[1]);
+            $("#nome_produto").val(arRetorno.nome_produto);
+            $("#descricao_produto").val(arRetorno.descricao_produto);
+            $("#valor_produto").val(arRetorno.valor_produto);
+            $("#quantidade_produto").val(arRetorno.quantidade_produto);
+            $("#codigo_categoria_produto").select2("val", arRetorno.codigo_categoria_produto);
 
-            if (arRetorno[0] == "1") {
-              GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
-            } else if (arRetorno[0] == "9999") {
-              window.location = '../includes/logout.php';
-            } else {
-              console.log(retorno);
-              console.log(arRetorno);
-            }
+            $("#nome_produto").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#descricao_produto").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#valor_produto").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#quantidade_produto").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#codigo_categoria_produto").prop("disabled", flag_disabled == "1" ? false : true);
+
+            //TERMINAR DE FINALIZAR O SCRIPT AQUI CARALHO      
+            $("#novoProdutoModal").modal("show");
+            flag_disabled == "1" ? $("#titulo_modal_novo_produto").html("Detalhe do produto Cód: " + StringPad(codigo, "0000")) : $("#titulo_modal_novo_produto").html("Editação do produto Cód: " + StringPad(codigo, "0000"));
           } catch (erro) {
-            alert("Não foi possível realizar esta operação! Contate a  Skunby Tecnologia (erro 3333).");
+            alert("Não foi possível realizar esta operação! Contate a Skunby Tecnologia2222.");
             console.log(retorno);
             console.log(arRetorno);
           }
@@ -444,15 +546,14 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
     }
 
     function Novo() {
+      $("#titulo_modal_novo_produto").html("Novo Produto");
       $("#nome_produto").val("");
       $("#descricao_produto").val("");
       $("#valor_produto").val("");
       $("#quantidade_produto").val("");
       $("#codigo_categoria_produto").select2("val", "");
       $("#btn_salvar").prop("disabled", false);
-
       $("#novoProdutoModal").modal("show");
-
     }
 
     function Salvar() {
