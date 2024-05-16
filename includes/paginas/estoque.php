@@ -493,7 +493,7 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
 
     function Carregar(codigo, flag_disabled) {
       function StringPad(str, pad, length) {
-        str = str.toString(); // Certifique-se de que a entrada é uma string
+        str = str.toString();
         while (str.length < length) {
           str = pad + str;
         }
