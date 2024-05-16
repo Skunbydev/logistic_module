@@ -189,7 +189,6 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
       $arRetorno[2] = $SQL;
     }
   } else {
-
     $SQL = "INSERT INTO estoque (nome_produto, descricao_produto, valor_produto, quantidade_produto, codigo_categoria_produto, situacao)
   VALUES ('$nome_produto', '$descricao_produto', '$valor_produto', '$quantidade_produto', '$codigo_categoria_produto', 1)";
 
@@ -329,8 +328,8 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
                       <option value="">selecione</option>
                       <?php
                       $SQL = "SELECT id_categoria, nome_categoria
-                    FROM logistic_module.categoria_produtos 
-                    WHERE situacao = 1";
+                      FROM logistic_module.categoria_produtos 
+                      WHERE situacao = 1";
                       $rsTipo_categoria_produto = mysqli_query($ConexaoMy, $SQL);
                       while ($arTipo_categoria_produto = mysqli_fetch_assoc($rsTipo_categoria_produto)) {
                         $arTipo_categoria_produto = array_map("utf8_encode", $arTipo_categoria_produto);

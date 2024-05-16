@@ -29,12 +29,7 @@ CREATE TABLE IF NOT EXISTS `categoria_produtos` (
   KEY `codigo_categoria_produto` (`codigo_categoria_produto`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela logistic_module.categoria_produtos: ~4 rows (aproximadamente)
-INSERT INTO `categoria_produtos` (`id_categoria`, `nome_categoria`, `situacao`, `codigo_categoria_produto`) VALUES
-	(1, 'acessórios', 1, 1),
-	(2, 'reposição', 1, 2),
-	(3, 'moto', 1, 3),
-	(4, 'carro', 1, 4);
+-- Exportação de dados foi desmarcado.
 
 -- Copiando estrutura para tabela logistic_module.clientes
 CREATE TABLE IF NOT EXISTS `clientes` (
@@ -45,16 +40,25 @@ CREATE TABLE IF NOT EXISTS `clientes` (
   PRIMARY KEY (`id_cliente`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela logistic_module.clientes: ~1 rows (aproximadamente)
-INSERT INTO `clientes` (`id_cliente`, `nome_cliente`, `email_cliente`, `senha_cliente`) VALUES
-	(1, 'Luiz Felipe Santos de Lima Alves', 'luiz.felipe@skunby.com', 'teste123');
+-- Exportação de dados foi desmarcado.
+
+-- Copiando estrutura para tabela logistic_module.dados_veiculo
+CREATE TABLE IF NOT EXISTS `dados_veiculo` (
+  `id_dados_veiculo` int(11) NOT NULL,
+  `marca_veiculo` varchar(255) DEFAULT NULL,
+  `nome_veiculo` varchar(255) DEFAULT NULL,
+  `ano_veiculo` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id_dados_veiculo`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Exportação de dados foi desmarcado.
 
 -- Copiando estrutura para tabela logistic_module.estoque
 CREATE TABLE IF NOT EXISTS `estoque` (
   `id_produto` int(11) NOT NULL AUTO_INCREMENT,
   `nome_produto` varchar(255) DEFAULT NULL,
   `descricao_produto` varchar(255) DEFAULT NULL,
-  `valor_produto` varchar(255) DEFAULT NULL,
+  `valor_produto` varchar(50) DEFAULT NULL,
   `quantidade_produto` int(11) DEFAULT NULL,
   `codigo_categoria_produto` int(11) DEFAULT NULL,
   `situacao` int(11) DEFAULT NULL,
@@ -62,10 +66,31 @@ CREATE TABLE IF NOT EXISTS `estoque` (
   KEY `categoria_produto` (`codigo_categoria_produto`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela logistic_module.estoque: ~1 rows (aproximadamente)
-INSERT INTO `estoque` (`id_produto`, `nome_produto`, `descricao_produto`, `valor_produto`, `quantidade_produto`, `codigo_categoria_produto`, `situacao`) VALUES
-	(1, 'Junta homocinética', 'Acompanha coifa abraçadeiras e graxa.  Garantia 90 dias  Peça Nova', '139,40', 1, 4, 1),
-	(2, 'Junta homocinética', 'Acompanha coifa abraçadeiras e graxsxa.  Garantia 90 dias  Peça Nova', '139,40', 1, 4, 1);
+-- Exportação de dados foi desmarcado.
+
+-- Copiando estrutura para tabela logistic_module.lista_clientes
+CREATE TABLE IF NOT EXISTS `lista_clientes` (
+  `id_cliente_lista` int(11) NOT NULL AUTO_INCREMENT,
+  `nome_cliente_lista` varchar(255) DEFAULT NULL,
+  `email_cliente_lista` varchar(255) DEFAULT NULL,
+  `telefone_cliente_lista` varchar(50) DEFAULT NULL,
+  `endereco_cliente_lista` varchar(255) DEFAULT NULL,
+  `situacao` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_cliente_lista`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Exportação de dados foi desmarcado.
+
+-- Copiando estrutura para tabela logistic_module.pedidos
+CREATE TABLE IF NOT EXISTS `pedidos` (
+  `id_pedido` int(11) DEFAULT NULL,
+  `nome_cliente_pedido` varchar(255) DEFAULT NULL,
+  `codigo_categoria_pedido` int(11) DEFAULT NULL,
+  `valor_pedido` varchar(255) DEFAULT NULL,
+  KEY `codigo_categoria_pedido` (`codigo_categoria_pedido`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Exportação de dados foi desmarcado.
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

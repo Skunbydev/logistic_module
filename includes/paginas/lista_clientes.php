@@ -1,4 +1,5 @@
-<?php session_name("login_cliente");
+<?php
+session_name("login_cliente");
 session_start();
 
 if ($_SESSION["login_cliente_auth"] != "1") {
@@ -16,10 +17,11 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == "InativarCliente") {
   }
   if ($rsAux) {
     $arRetorno[0] = "1";
+    $arRetorno[2] = $SQL;
     $arRetorno[1] = "Cliente inativo com sucesso!";
   } else {
     $arRetorno[0] = "0";
-    $arRetorno[2] = $sql;
+    $arRetorno[2] = $SQL;
     $arRetorno[1] = "Não foi possível inativar o Cliente!";
   }
   die(json_encode($arRetorno));
@@ -44,9 +46,31 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == "Salvar") {
   $endereco_cliente_lista = $_POST["endereco_cliente_lista"];
 
   if ($id_cliente_lista != "") {
-    die('aaaaaaaaaaa');
-  }
+    $SQL = "UPDATE lista_clientes SET 
+    nome_cliente_lista = '$nome_cliente_lista', 
+    email_cliente_lista = '$email_cliente_lista', 
+    telefone_cliente_lista = '$telefone_cliente_lista', 
+    endereco_cliente_lista = '$endereco_cliente_lista' 
+    WHERE id_cliente_lista = '$id_cliente_lista'";
 
+
+    $rsAux = mysqli_query($ConexaoMy, $SQL);
+
+    if ($rsAux) {
+      $arRetorno[0] = "1";
+      $arRetorno[1] = "Cliente editado com sucesso";
+      $arRetorno[2] = $SQL;
+      DBClose($ConexaoMy);
+      die(json_encode($arRetorno));
+    } else if (!$rsAux) {
+      $arRetorno[0] = "0";
+      $arRetorno[1] = "Cliente não foi editado, contate a skunby Tecnologia (1111)";
+      $arRetorno[2] = $SQL;
+      DBClose($ConexaoMy);
+      die(json_encode($arRetorno));
+    }
+
+  }
   $SQL = "INSERT INTO lista_clientes (nome_cliente_lista, email_cliente_lista, telefone_cliente_lista, endereco_cliente_lista, situacao) VALUES ('$nome_cliente_lista', '$email_cliente_lista', '$telefone_cliente_lista', '$endereco_cliente_lista', 1)";
 
   $rsAux = mysqli_query($ConexaoMy, $SQL);
@@ -63,6 +87,7 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == "Salvar") {
     DBClose($ConexaoMy);
     die(json_encode($arRetorno));
   }
+
 }
 
 if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
@@ -178,7 +203,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
                 <div class="row">
                   <div class="col-md-9">
                     <div class="btn-group gap-2">
-                      <input type="hidden" id="hid_id_cliente">
+                      <input type="hidden" id="hid_id_cliente_lista">
                       <button type="button" class="btn btn-primary" onclick="Novo()" id="btn_salvar">
                         <i class="bi bi-plus-square"></i> Novo Cliente
                       </button>
@@ -422,6 +447,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
                 alert(arRetorno[1]);
                 if (arRetorno[0] == "1") {
                   $("#novoClienteListaModal").hide();
+                  console.log('aqui');
                   GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
                   window.location.reload();
                 } else if (arRetorno[0] === 9999) {
@@ -496,7 +522,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
           //   btn.innerHTML = 'EDITAR';
           //   btn.style.visibility = 'visible';
           // }
-          $("#hid_id_codigo_cliente").val(codigo);
+          $("#hid_id_cliente_lista").val(codigo);
           var parametros = new FormData();
           parametros.append("metodo", "Carregar");
           parametros.append("codigo", codigo);
