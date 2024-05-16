@@ -9,7 +9,7 @@ if ($_SESSION["login_cliente_auth"] != "1") {
 include '../conexao_BD.php';
 $ConexaoMy = DBConnectMy();
 
-if (isset($_POST["metodo"]) && $_POST["metodo"] === "Carregar") {
+if (isset($_POST["metodo"]) && $_POST["metodo"] == "Carregar") {
   $arrayRetornoGeral = array();
   $SQL = "SELECT * FROM estoque 
 					WHERE id_produto = '" . $_POST["codigo"] . "'";
@@ -22,7 +22,7 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] === "Carregar") {
 
 }
 
-if (isset($_POST["metodo"]) && $_POST["metodo"] === "InativarProduto") {
+if (isset($_POST["metodo"]) && $_POST["metodo"] == "InativarProduto") {
   if ((int) $_POST["codigo"] > 0) {
     $SQL = "UPDATE estoque SET situacao = '0' WHERE id_produto = '" . $_POST["codigo"] . "' ";
     $rsAux = mysqli_query($ConexaoMy, $SQL);
@@ -140,7 +140,8 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
     }
   }
 
-  $dados[$i][6] = 'R$: ' . number_format($total_valor, 2);
+  $dados[$i][6] = 'R$: ' . number_format($total_valor, 2, ',', '.');
+
   $dados[$i][7] = $total_quantidade;
 
   $recordsTotal = $i;
@@ -352,6 +353,24 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
     </div>
   </div>
 
+  <div class="modal fade" id="filtroAvancado" tabindex="-1" aria-labelledby="filtroAvancadoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content bg-dark">
+        <div class="modal-header bg-primary">
+          <h5 class="modal-title" id="titulo_filtro">Filtrar pesquisa</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body bg-white text-black">
+          <div class="row">
+            <div class="col-md-6">
+              <h1>depois eu termino, to com preguiça</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     $("#valor_produto").mask("#00,00", { reverse: true });
     var GLTabela = null;
@@ -451,10 +470,10 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
         "infoFiltered": "(Exibindo _MAX_ total registros)",
         "sSearch": "Pesquisar",
         "oPaginate": {
-          "sNext": "Próximo",
-          "sPrevious": "Anterior",
-          "sFirst": "Primeiro",
-          "sLast": "Último"
+          "sNext": "",
+          "sPrevious": "",
+          "sFirst": "",
+          "sLast": ""
         },
         "oAria": {
           "sSortAscending": ": Ordenar colunas de forma ascendente",
@@ -462,6 +481,10 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
         }
       }
     });
+    function PesquisaAvancada() {
+      GLModalAtual = null;
+      GLModalAtual = $("#filtroAvancado").modal("show");
+    }
 
     function Filtrar() {
       GLFILTRO = {
@@ -567,8 +590,6 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
             $("#valor_produto").prop("disabled", flag_disabled == "1" ? false : true);
             $("#quantidade_produto").prop("disabled", flag_disabled == "1" ? false : true);
             $("#codigo_categoria_produto").prop("disabled", flag_disabled == "1" ? false : true);
-
-            //TERMINAR DE FINALIZAR O SCRIPT AQUI CARALHO      
             $("#novoProdutoModal").modal("show");
             flag_disabled == "1" ? $("#titulo_modal_novo_produto").html("Detalhe do produto Cód: " + StringPad(codigo, "0000")) : $("#titulo_modal_novo_produto").html("Editação do produto Cód: " + StringPad(codigo, "0000"));
           } catch (erro) {

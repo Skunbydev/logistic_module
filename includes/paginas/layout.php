@@ -98,7 +98,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="./clientes.php" class="nav-link text-white">
+          <a href="./lista_clientes.php" class="nav-link text-white">
             <i class="bi bi-person-lines-fill"></i>
             Lista Clientes
           </a>
