@@ -116,3 +116,13 @@ html {
 .card-header {
   --bs-card-title-spacer-y: 0 !important;
 }
+
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+  background-color: #e9ecef;
+}
+
+.select2-results {
+  background-color: #f8f9fa ;
+  color: black;
+}

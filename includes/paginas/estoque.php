@@ -16,7 +16,6 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] === "Carregar") {
 
   $rsDadosEstoque = mysqli_query($ConexaoMy, $SQL);
   $arDadosEstoque = mysqli_fetch_assoc($rsDadosEstoque);
-  // $arDadosEstoque = array_map($arDadosEstoque);
 
   $arrayRetornoGeral = $arDadosEstoque;
   die(json_encode($arrayRetornoGeral));
@@ -116,6 +115,34 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
     $dados[$i][] = $Aux["nome_categoria"];
     $i++;
   }
+  $dados[$i] = array(
+    "",
+    "",
+    "",
+    "",
+    "",
+    "<td style='width: 100%;'>VALOR TOTAL EM ESTOQUE:</td>",
+    "<td>R$ </td>",
+    "",
+    "",
+  );
+  $total_valor = 0;
+  $total_quantidade = 0;
+  foreach ($dados as $produto) {
+    $valor_produto = str_replace('R$: ', '', $produto[6]);
+    $valor_produto = str_replace(',', '.', $valor_produto);
+    if (is_numeric($valor_produto)) {
+      $total_valor += floatval($valor_produto);
+    }
+
+    if (is_numeric($produto[7])) {
+      $total_quantidade += intval($produto[7]);
+    }
+  }
+
+  $dados[$i][6] = 'R$: ' . number_format($total_valor, 2);
+  $dados[$i][7] = $total_quantidade;
+
   $recordsTotal = $i;
   $Arr = array(
     "draw" => isset($_GET['draw']) ? intval($_GET['draw']) : 0,
@@ -124,6 +151,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
     "data" => $dados,
     "linhas" => $i
   );
+
   echo json_encode($Arr);
   die();
 }
@@ -245,7 +273,7 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
         <div class="row">
           <div class="col-md-12">
             <div class="table-responsive">
-              <table id="tabela_consulta" class="table table-striped table-hover" style="font-size:12px;">
+              <table id="tabela_consulta" class="table table-striped table-hover" style="font-size:12px; min-width: auto">
                 <thead>
                   <tr class="bg-light-blue color-palette">
                     <th style="width: 1%"></th>
@@ -253,7 +281,7 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
                     <th style="width: 1%"></th>
                     <th style="width:11%; text-align:center; vertical-align:middle;">Código</th>
                     <th style="width:11%; text-align:center; vertical-align:middle;">Nome</th>
-                    <th style="width:11%; text-align:center; vertical-align:middle;">Descricao</th>
+                    <th style="width:11%; text-align:center; vertical-align:middle; min-width: 250px">Descricao</th>
                     <th style="width:11%; text-align:center; vertical-align:middle;">Valor</th>
                     <th style="width:11%; text-align:center; vertical-align:middle;">Quantidade</th>
                     <th style="width:11%; text-align:center; vertical-align:middle;">Categoria</th>
@@ -265,51 +293,58 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
         </div>
       </section>
       <div class="modal fade" id="novoProdutoModal" tabindex="-1" aria-labelledby="novoProdutoModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
           <div class="modal-content bg-dark">
-            <div class="modal-header">
+            <div class="modal-header bg-primary">
               <h5 class="modal-title" id="titulo_modal_novo_produto">Adicionar Novo Produto</h5>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body bg-white text-black">
               <form>
-                <div class="mb-3">
-                  <label for="nome_produto" class="form-label">Nome</label>
-                  <input type="text" class="form-control" id="nome_produto">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="nome_produto" class="form-label">Nome <span style="color: red">*</span></label>
+                    <input type="text" class="form-control" id="nome_produto">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="descricao_produto" class="form-label">Descrição <span style="color: red">*</span></label>
+                    <input type="text" class="form-control" id="descricao_produto">
+                  </div>
                 </div>
-                <div class="mb-3">
-                  <label for="descricao_produto" class="form-label">Descrição</label>
-                  <input type="text" class="form-control" id="descricao_produto">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="valor_produto" class="form-label">Valor <span style="color: red">*</span></label>
+                    <input type="text" class="form-control" id="valor_produto">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="quantidade_produto" class="form-label">Quantidade <span style="color: red">*</span></label>
+                    <input type="number" class="form-control" id="quantidade_produto">
+                  </div>
                 </div>
-                <div class="mb-3">
-                  <label for="valor_produto" class="form-label">Valor</label>
-                  <input type="text" class="form-control" id="valor_produto">
-                </div>
-                <div class="mb-3">
-                  <label for="quantidade_produto" class="form-label">Quantidade</label>
-                  <input type="number" class="form-control" id="quantidade_produto">
-                </div>
-                <div class="mb-3">
-                  <label for="codigo_categoria_produto" class="form-label">Categoria do produto</label>
-                  <select class="form-control select2" data-placeholder="Selecione" data-allow-clear="true" id="codigo_categoria_produto" name="codigo_categoria_produto" style="width: 100%;">
-                    <option value="">selecione</option>
-                    <?php
-                    $SQL = "SELECT id_categoria, nome_categoria
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="codigo_categoria_produto" class="form-label">Categoria do produto <span style="color: red">*</span></label>
+                    <select class="form-control select2" data-placeholder="Selecione" data-allow-clear="true" id="codigo_categoria_produto" name="codigo_categoria_produto" style="width: 100%;">
+                      <option value="">selecione</option>
+                      <?php
+                      $SQL = "SELECT id_categoria, nome_categoria
                     FROM logistic_module.categoria_produtos 
                     WHERE situacao = 1";
-                    $rsTipo_categoria_produto = mysqli_query($ConexaoMy, $SQL);
-                    while ($arTipo_categoria_produto = mysqli_fetch_assoc($rsTipo_categoria_produto)) {
-                      $arTipo_categoria_produto = array_map("utf8_encode", $arTipo_categoria_produto);
-                      echo "<option value='" . utf8_decode($arTipo_categoria_produto["id_categoria"]) . "'>" . utf8_decode($arTipo_categoria_produto["nome_categoria"]) . "</option>";
-                    }
-                    ?>
-                  </select>
+                      $rsTipo_categoria_produto = mysqli_query($ConexaoMy, $SQL);
+                      while ($arTipo_categoria_produto = mysqli_fetch_assoc($rsTipo_categoria_produto)) {
+                        $arTipo_categoria_produto = array_map("utf8_encode", $arTipo_categoria_produto);
+                        echo "<option style='color:black; background-color: white' value='" . utf8_decode($arTipo_categoria_produto["id_categoria"]) . "'>" . utf8_decode($arTipo_categoria_produto["nome_categoria"]) . "</option>";
+                      }
+                      ?>
+                    </select>
+                  </div>
                 </div>
               </form>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="">Fechar</button>
-              <button type="button" class="btn btn-primary" id="btn_cadastrar" onclick="Salvar()">Cadastrar</button>
+
+            <div class="modal-footer bg-primary">
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="">Fechar</button>
+              <button type="button" class="btn btn-info" id="btn_cadastrar" onclick="Salvar()">Cadastrar</button>
             </div>
           </div>
         </div>
@@ -412,7 +447,7 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
         "lengthMenu": "Exibindo _MENU_ registros por Página",
         "zeroRecords": "Desculpe - Nenhum registro encontrado",
         "info": "Exibindo página _PAGE_ de _PAGES_ ( Total de _TOTAL_ Registros )",
-        "infoEmpty": "Não há registros disponiveis",
+        "infoEmpty": "",
         "infoFiltered": "(Exibindo _MAX_ total registros)",
         "sSearch": "Pesquisar",
         "oPaginate": {
