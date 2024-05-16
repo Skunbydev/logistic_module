@@ -376,6 +376,7 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
     var GLTabela = null;
     var GLFiltro = [];
 
+
     GLFiltro = {
       nome_produto_filtro: "",
       descricao_produto_filtro: "",
