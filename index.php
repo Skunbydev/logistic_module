@@ -4,6 +4,7 @@ session_name("login_cliente");
 include './includes/conexao_BD.php';
 $ConexaoMy = DBConnectMy();
 
+
 if (isset($_POST["metodo"]) == "Logar") {
   $email_cliente = $_POST['email_cliente'];
   $senha_cliente = $_POST['senha_cliente'];
@@ -18,18 +19,16 @@ if (isset($_POST["metodo"]) == "Logar") {
         $arRetorno[1] = "Login bem sucedido!";
         $_SESSION["login_cliente_auth"] = "1";
       } else {
-        $arRetorno[0] = "0";
+        $arRetorno[0] = 0;
         $_SESSION["login_cliente_auth"] = "0";
         $arRetorno[1] = "Login falhou. Email ou senha incorretos.";
-
-
       }
     } else {
-      $arRetorno[0] = "0";
-      $arRetorno[1] = "Usuário não encontrado";
+      $arRetorno[0] = 0;
+      $arRetorno[1] = "Usuário não encontrado.";
     }
   } else {
-    $arRetorno[0] = "0";
+    $arRetorno[0] = 0;
     $arRetorno[1] = "Erro na consulta SQL: " . mysqli_error($ConexaoMy);
   }
   die(json_encode($arRetorno));
@@ -50,6 +49,8 @@ if (isset($_POST["metodo"]) == "Logar") {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+
 
 </head>
 
@@ -264,19 +265,28 @@ if (isset($_POST["metodo"]) == "Logar") {
 
   <script src="./includes/plugins/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.all.min.js"></script>
   <script>
-
     function Logar() {
       if ($("#email_cliente").val() == "" || $("#email_cliente").val() == null) {
-        alert("Informe o email, por gentileza.");
+        Swal.fire({
+          icon: 'warning',
+          title: 'Atenção',
+          text: 'Informe o email, por gentileza.',
+        });
         $("#email_cliente").focus();
         return false;
       }
       if ($("#senha_cliente").val() == "" || $("#senha_cliente").val() == null) {
-        alert("Informe a senha, por gentileza.");
+        Swal.fire({
+          icon: 'warning',
+          title: 'Atenção',
+          text: 'Informe a senha, por gentileza.',
+        });
         $("#senha_cliente").focus();
         return false;
       }
+
       var parametros = new FormData();
       parametros.append("metodo", "Logar");
       parametros.append("email_cliente", $("#email_cliente").val());
@@ -295,14 +305,27 @@ if (isset($_POST["metodo"]) == "Logar") {
           $('#div_loading_modal_login').hide();
           try {
             var arRetorno = JSON.parse(retorno);
-            alert(arRetorno[1]);
             if (arRetorno[0] == 1) {
-              window.location = ('includes/paginas/home.php');
+              Swal.fire({
+                icon: 'success',
+                title: 'Sucesso',
+                text: arRetorno[1],
+              }).then(() => {
+                window.location = 'includes/paginas/home.php';
+              });
             } else {
-              console.log('Falha no login');
+              Swal.fire({
+                icon: 'error',
+                title: 'Falha no login',
+                text: arRetorno[1],
+              });
             }
           } catch (erro) {
-            alert('deu erro');
+            Swal.fire({
+              icon: 'error',
+              title: 'Erro',
+              text: 'Ocorreu um erro no processamento do login.',
+            });
             console.log(erro);
             console.log(retorno);
           }
@@ -311,13 +334,14 @@ if (isset($_POST["metodo"]) == "Logar") {
 
       return false;
     }
+
     function smoothScroll(event) {
       event.preventDefault();
       const targetId = event.target.getAttribute("href").substring(1);
       const targetElement = document.getElementById(targetId);
       const startPos = window.pageYOffset;
       const targetOffset = targetElement.getBoundingClientRect().top;
-      const duration = 500; // duração da animação em milissegundos
+      const duration = 500;
       const startTime = performance.now();
 
       function scrollAnimation(currentTime) {
@@ -332,9 +356,8 @@ if (isset($_POST["metodo"]) == "Logar") {
 
       requestAnimationFrame(scrollAnimation);
     }
-
-
   </script>
+
 </body>
 
 </html>

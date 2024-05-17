@@ -259,12 +259,6 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
                       <button type="button" class="btn btn-primary" onclick="PesquisaAvancada()"><i class="bi bi-funnel-fill"></i> FILTRO</button>
                     </div>
                   </div>
-                  <div class="col-md-3">
-                    <div class="form-group">
-                      <div class="input-group">
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -304,21 +298,44 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
                 <div class="row">
                   <div class="col-md-6 mb-3">
                     <label for="nome_produto" class="form-label">Nome <span style="color: red">*</span></label>
-                    <input type="text" class="form-control" id="nome_produto">
+                    <div class="input-group">
+                      <span class="input-group-text">
+                        <i class="bi bi-tag"></i>
+                      </span>
+                      <input type="text" class="form-control" id="nome_produto">
+                    </div>
                   </div>
                   <div class="col-md-6 mb-3">
                     <label for="descricao_produto" class="form-label">Descrição <span style="color: red">*</span></label>
-                    <input type="text" class="form-control" id="descricao_produto">
+                    <div class="input-group">
+                      <span class="input-group-text">
+                        <i class="bi bi-card-text"></i>
+                      </span>
+                      <input type="text" class="form-control" id="descricao_produto">
+                    </div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-md-6 mb-3">
-                    <label for="valor_produto" class="form-label">Valor <span style="color: red">*</span></label>
-                    <input type="text" class="form-control" id="valor_produto">
+                    <div class="form-group">
+                      <label for="valor_produto" class="form-label">Valor <span style="color: red">*</span></label>
+                      <div class="input-group">
+                        <span class="input-group-text">
+                          <i class="bi bi-cash-stack"></i>
+                        </span>
+                        <input type="text" class="form-control" id="valor_produto">
+                      </div>
+                    </div>
                   </div>
+
                   <div class="col-md-6 mb-3">
                     <label for="quantidade_produto" class="form-label">Quantidade <span style="color: red">*</span></label>
-                    <input type="number" class="form-control" id="quantidade_produto">
+                    <div class="input-group">
+                      <span class="input-group-text">
+                        <i class="bi bi-hash"></i>
+                      </span>
+                      <input type="number" class="form-control" id="quantidade_produto">
+                    </div>
                   </div>
                 </div>
                 <div class="row">
@@ -339,9 +356,8 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
                     </select>
                   </div>
                 </div>
-              </form>
             </div>
-
+            </form>
             <div class="modal-footer bg-primary">
               <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="">Fechar</button>
               <button type="button" class="btn btn-info" id="btn_cadastrar" onclick="Salvar()">Cadastrar</button>
