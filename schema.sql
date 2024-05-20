@@ -76,8 +76,10 @@ CREATE TABLE IF NOT EXISTS `lista_clientes` (
   `telefone_cliente_lista` varchar(50) DEFAULT NULL,
   `endereco_cliente_lista` varchar(255) DEFAULT NULL,
   `situacao` int(11) DEFAULT NULL,
+  `cep_cliente_lista` varchar(50) DEFAULT NULL,
+  `numero_rua_cliente_lista` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_cliente_lista`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Exportação de dados foi desmarcado.
 

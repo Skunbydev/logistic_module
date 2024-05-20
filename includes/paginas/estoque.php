@@ -702,6 +702,11 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
         }
       });
     }
+    $(document).ready(function () {
+      $('#codigo_categoria_produto').select2({
+        dropdownParent: $("#novoProdutoModal")
+      });
+    });
   </script>
 
 </body>

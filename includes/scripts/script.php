@@ -4,11 +4,3 @@
 <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script>
-  $(document).ready(function () {
-    $('#codigo_categoria_produto').select2({
-      dropdownParent: $("#novoProdutoModal")
-    });
-  });
-
-</script>
