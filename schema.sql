@@ -78,19 +78,29 @@ CREATE TABLE IF NOT EXISTS `lista_clientes` (
   `situacao` int(11) DEFAULT NULL,
   `cep_cliente_lista` varchar(50) DEFAULT NULL,
   `numero_rua_cliente_lista` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id_cliente_lista`)
+  `pedidos_gerados` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_cliente_lista`),
+  KEY `id_cliente_lista` (`id_cliente_lista`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Exportação de dados foi desmarcado.
 
 -- Copiando estrutura para tabela logistic_module.pedidos
 CREATE TABLE IF NOT EXISTS `pedidos` (
-  `id_pedido` int(11) DEFAULT NULL,
-  `nome_cliente_pedido` varchar(255) DEFAULT NULL,
-  `codigo_categoria_pedido` int(11) DEFAULT NULL,
-  `valor_pedido` varchar(255) DEFAULT NULL,
-  KEY `codigo_categoria_pedido` (`codigo_categoria_pedido`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id_pedido` int(11) NOT NULL AUTO_INCREMENT,
+  `codigo_categoria_produto` int(11) DEFAULT NULL,
+  `id_cliente_lista` int(11) DEFAULT NULL,
+  `valor_total` varchar(50) DEFAULT NULL,
+  `endereco_cliente` varchar(255) DEFAULT NULL,
+  `numero_endereco_cliente` varchar(20) DEFAULT NULL,
+  `cep_cliente` varchar(20) DEFAULT NULL,
+  `nome_produto` varchar(255) DEFAULT NULL,
+  `quantidade_produto` varchar(50) DEFAULT NULL,
+  `situacao` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_pedido`),
+  KEY `id_cliente_lista` (`id_cliente_lista`),
+  KEY `codigo_categoria_pedido` (`codigo_categoria_produto`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Exportação de dados foi desmarcado.
 
