@@ -22,11 +22,16 @@ Para utilizar o `logistic_module`, siga os passos abaixo:
 
    - Copie os arquivos do projeto para o diretório padrão do servidor (geralmente `htdocs` no XAMPP).
 
-3. **Acesso ao Sistema:**
+3. **Baixe as dependências adicionais no projeto:**
+   - `composer require datatables/datatables`
+   - `https://jquery.com/download/`
+   
+   **OBS: os diretórios padrões do projeto estão apontando para: includes/plugin**
+4. **Acesso ao Sistema:**
 
    - Acesse o sistema através do navegador.
 
-4. **Login:**
+5. **Login:**
    - Utilize as credenciais padrão fornecidas no projeto (`luiz.felipe@skunby.com` / `teste123`) ou crie suas próprias credenciais de acesso.
 
 ---
