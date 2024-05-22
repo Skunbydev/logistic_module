@@ -22,33 +22,31 @@
 </style>
 
 <body style="background-color: #1e2125 !important; color: white">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-    <div class="container">
-      <div class="d-flex flex-wrap align-items-center justify-content-between">
-        <a href="/" class="d-flex align-items-center m-2 m-lg-0 text-dark text-decoration-none">
-          <h1 class="h4 mb-0 text-white">PROD</h1>
-        </a>
-
-        <ul class="nav col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-          <li><a href="" class="nav-link text-white px-2 link-secondary">item 1</a></li>
-          <li><a href="" class="nav-link text-white px-2 link-secondary">item 2</a></li>
-          <li><a href="" class="nav-link text-white px-2 link-secondary">item 3</a></li>
-        </ul>
-      </div>
-      <div class="dropdown">
-        <a href="#" class="d-block link-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="https://avatars.githubusercontent.com/u/122830909?v=4" alt="profile photo" width="32" height="32" class="rounded-circle">
-        </a>
-        <ul class="dropdown-menu text-small dropdown-menu-right" aria-labelledby="dropdownUser1">
-          <li><a class="dropdown-item" href="#">Novo pedido...</a></li>
-          <li><a class="dropdown-item" href="#">Configurações</a></li>
-          <li><a class="dropdown-item" href="#">Meu Perfil</a></li>
-          <li>
-            <hr class="dropdown-divider">
-          </li>
-          <li><a class="dropdown-item" href="#" onclick="deslogar();">Deslogar</a></li>
-        </ul>
-      </div>
+  <nav class="navbar navbar-static-top">
+    <div class="d-flex flex-wrap align-items-center justify-content-between">
+      <a href="/" class="d-flex align-items-center m-2 m-lg-0 text-dark text-decoration-none">
+        <h1 class="h4 mb-0 text-white">PROD</h1>
+      </a>
+      <ul class="nav col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="" class="nav-link text-white px-2 link-secondary">item 1</a></li>
+        <li><a href="" class="nav-link text-white px-2 link-secondary">item 2</a></li>
+        <li><a href="" class="nav-link text-white px-2 link-secondary">item 3</a></li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="#" class="d-block link-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="https://avatars.githubusercontent.com/u/122830909?v=4" alt="profile photo" width="32" height="32" class="rounded-circle">
+      </a>
+      <ul class="dropdown-menu text-small dropdown-menu-right" aria-labelledby="dropdownUser1">
+        <li><a class="dropdown-item" href="#">Novo pedido...</a></li>
+        <li><a class="dropdown-item" href="#">Configurações</a></li>
+        <li><a class="dropdown-item" href="#">Meu Perfil</a></li>
+        <li>
+          <hr class="dropdown-divider">
+        </li>
+        <li><a class="dropdown-item" href="#" onclick="deslogar();">Deslogar</a></li>
+      </ul>
+    </div>
     </div>
   </nav>
   <div class="d-flex flex-row">
@@ -122,34 +120,33 @@
         </ul>
       </div>
     </div>
+  </div>
 
-    <script>
-      function deslogar() {
-        Swal.fire({
-          title: 'Tem certeza que deseja sair?',
-          showCancelButton: true,
-          confirmButtonText: 'Sim',
-          cancelButtonText: 'Não',
-          icon: 'question'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = './logout.php';
-          }
-        });
-      }
-      function atualizarLinkAtivo() {
-        var links = document.querySelectorAll('.nav-link');
-        links.forEach(function (link) {
-          link.classList.remove('active');
-          link.style.color = 'white';
-          var urlSemHash = window.location.href.split('#')[0];
-          if (link.href === urlSemHash) {
-            link.classList.add('active');
-          }
-        });
-      }
-
-      window.onload = atualizarLinkAtivo;
-
-
-    </script>
+  <script>
+    function deslogar() {
+      Swal.fire({
+        title: 'Tem certeza que deseja sair?',
+        showCancelButton: true,
+        confirmButtonText: 'Sim',
+        cancelButtonText: 'Não',
+        icon: 'question'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = './logout.php';
+        }
+      });
+    }
+    function atualizarLinkAtivo() {
+      var links = document.querySelectorAll('.nav-link');
+      links.forEach(function (link) {
+        link.classList.remove('active');
+        link.style.color = 'white';
+        var urlSemHash = window.location.href.split('#')[0];
+        if (link.href === urlSemHash) {
+          link.classList.add('active');
+        }
+      });
+    }
+    window.onload = atualizarLinkAtivo;
+  </script>
+</body>
