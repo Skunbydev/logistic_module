@@ -183,42 +183,57 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
 </head>
 
 <body>
-  <?php include 'layout.php'; ?>
-  <div class="flex-grow-1 p-3">
-    <div class="row">
-      <section class="content-header">
-        <h2>Lista de clientes <small class="fs-4" style="color: gray">gerencie seus clientes</small></h2>
-      </section>
-      <section class="content mt-4">
-        <div id="div_consulta" class="row">
-          <div class="col-md-12">
+  <?php include 'layout2.php'; ?>
+  <div class="wrapper">
+    <div class="main-content">
+      <div class="flex-grow-1 p-3">
+        <div class="row">
+          <section class="content-header">
+            <h2>Lista de clientes <small class="fs-4" style="color: gray">gerencie seus clientes</small></h2>
+          </section>
+        </div>
+        <div class="row mt-4">
+          <div id="div_consulta" class="col-md-12">
             <div class="card card-primary card-outline">
-              <div class="card-header bg-primary d-flex justify-content-between align-items-center">
-                <h4 class="card-title text-white mb-0">
-                  Lista de clientes
+              <div class="card-header">
+                <h3 class="card-title">
+                  LISTA DE CLIENTES
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <a class="hint--right" data-hint="Pesquisar Avançada" style="cursor:pointer;" onclick="PesquisaAvancada()">
-                    <span class="glyphicon glyphicon-search"></span>
+                    <i title='Editar pedido' class="bi bi-search" style="width: 15px"></i>
                   </a>
-                </h4>
+                </h3>
                 <div class="card-tools">
-                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="bi bi-file-minus-fill text-white"></i></button>
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="bi bi-dash-square"></i></button>
                 </div>
               </div>
               <div class="card-body">
                 <div class="row">
                   <div class="col-md-9">
-                    <div class="btn-group gap-2">
+                    <div class="form-group">
                       <input type="hidden" id="hid_id_cliente_lista">
-                      <button type="button" class="btn btn-primary" onclick="Novo()" id="btn_salvar">
-                        <i class="bi bi-plus-square"></i> Novo Cliente
-                      </button>
-                      <button type="button" class="btn btn-primary" onclick="PesquisaAvancada()"><i class="bi bi-funnel-fill"></i> FILTRO</button>
+                      <button type="button" class="btn btn-primary" onclick="Novo()"><i class="bi bi-plus-square" style="margin-right: 5px"></i>Novo Cliente</button>
+                      <button type="button" class="btn btn-primary" onclick="PesquisaAvancada()"><span class="bi bi-funnel-fill"></span>&nbsp;&nbsp;FILTRO</button>
                     </div>
                   </div>
-                  <div class="col-md-3">
-                    <div class="form-group">
-                      <div class="input-group">
-                      </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="table-responsive">
+                      <table id="tabela_consulta" class="table table-striped table-hover" style="font-size:12px; min-width: auto">
+                        <thead>
+                          <tr class="bg-light-blue color-palette">
+                            <th style="width: 1%"></th>
+                            <th style="width: 1%"></th>
+                            <th style="width: 1%"></th>
+                            <th style="width:11%; text-align:center; vertical-align:middle;">Código</th>
+                            <th style="width:11%; text-align:center; vertical-align:middle; min-width: 200px">Nome</th>
+                            <th style="width:11%; text-align:center; vertical-align:middle; min-width: 200px">Email cliente</th>
+                            <th style="width:11%; text-align:center; vertical-align:middle;">Telefone</th>
+                            <th style="width:11%; text-align:center; vertical-align:middle; min-width: 200px">Endereco</th>
+                          </tr>
+                        </thead>
+                      </table>
                     </div>
                   </div>
                 </div>
@@ -226,28 +241,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="table-responsive">
-              <table id="tabela_consulta" class="table table-striped table-hover" style="font-size:12px; min-width: auto">
-                <thead>
-                  <tr class="bg-light-blue color-palette">
-                    <th style="width: 1%"></th>
-                    <th style="width: 1%"></th>
-                    <th style="width: 1%"></th>
-                    <th style="width:11%; text-align:center; vertical-align:middle;">Código</th>
-                    <th style="width:11%; text-align:center; vertical-align:middle; min-width: 200px">Nome</th>
-                    <th style="width:11%; text-align:center; vertical-align:middle; min-width: 200px">Email cliente</th>
-                    <th style="width:11%; text-align:center; vertical-align:middle;">Telefone</th>
-                    <th style="width:11%; text-align:center; vertical-align:middle; min-width: 200px">Endereco</th>
-                  </tr>
-                </thead>
-              </table>
-            </div>
-          </div>
-        </div>
-
-      </section>
+      </div>
       <div class="modal fade" id="novoClienteListaModal" tabindex="-1" aria-labelledby="novoClienteListaModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
           <div class="modal-content bg-dark">
@@ -297,323 +291,355 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
 
         </div>
       </div>
+
     </div>
+  </div>
+  <script>
+    var GLTabela = null;
+    var GLFiltro = [];
 
-    <script>
-      var GLTabela = null;
-      var GLFiltro = [];
+    GLFiltro = {
+      nome_cliente_lista_filtro: "",
+      email_cliente_lista_filtro: "",
+      telefone_cliente_lista_filtro: "",
+      endereco_cliente_lista_filtro: ""
+    }
 
-      GLFiltro = {
-        nome_cliente_lista_filtro: "",
-        email_cliente_lista_filtro: "",
-        telefone_cliente_lista_filtro: "",
-        endereco_cliente_lista_filtro: ""
+    GLTabela = $('#tabela_consulta').DataTable({
+      "iDisplayLength": 100,
+      "searching": false,
+      "lengthChange": false,
+      "processing": true,
+      "serverSide": true,
+      "ajax": "<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro),
+      "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        $($(nRow).find("td")[0]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[1]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[2]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[3]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[4]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[5]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[6]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[7]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[8]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[9]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+
+      },
+      "fnDrawCallback": function () {
+        $("#div_load_consulta").hide();
+        $("#div_load_filtro").hide();
+      },
+      "preDrawCallback": function (settings) {
+        $("#div_load_consulta").show();
+        $("#div_load_filtro").show();
+      },
+      "initComplete": function (settings, json) {
+        $("#div_load_consulta").hide();
+        $("#div_load_filtro").hide();
+      },
+      "aoColumnDefs": [
+        // Desabilitando Ordenacao coluna
+        {
+          'bSortable': false,
+          'aTargets': [0, 1, 2]
+
+        },
+        // Desabilitando Busca coluna
+        {
+          "bSearchable": false,
+          "aTargets": [0, 1, 2]
+        }
+      ],
+      // Definindo ordenação padrão 3 coluna
+      "order": [
+        [3, "desc"]
+      ],
+      "language": {
+        "lengthMenu": "Exibindo _MENU_ registros por Página",
+        "zeroRecords": "Desculpe - Nenhum registro encontrado",
+        "info": "Exibindo página _PAGE_ de _PAGES_ ( Total de _TOTAL_ Registros )",
+        "infoEmpty": "",
+        "infoFiltered": "(Exibindo _MAX_ total registros)",
+        "sSearch": "Pesquisar",
+        "oPaginate": {
+          "sNext": "",
+          "sPrevious": "",
+          "sFirst": "",
+          "sLast": ""
+        },
+        "oAria": {
+          "sSortAscending": ": Ordenar colunas de forma ascendente",
+          "sSortDescending": ": Ordenar colunas de forma descendente"
+        }
+      }
+    });
+    function Novo() {
+      $("#titulo_modal_novo_lista").html("Novo Cliente");
+      $("#novoClienteListaModal").modal("show");
+      $("#nome_cliente_lista").val("");
+      $("#email_cliente_lista").val("");
+      $("#telefone_cliente_lista").val("");
+      $("#endereco_cliente_lista").val("");
+      $("#cep_cliente_lista").val("");
+      $("#numero_rua_cliente_lista").val("");
+    }
+
+    function validarCampo() {
+      if ($("#nome_cliente_lista").val() == "" || $("#nome_cliente_lista").val() == null) {
+        Swal.fire({
+          title: 'Informe o nome do Cliente',
+          icon: 'error'
+        });
+        $("#nome_cliente_lista").focus();
+        return false;
       }
 
-      GLTabela = $('#tabela_consulta').DataTable({
-        "iDisplayLength": 100,
-        "searching": false,
-        "lengthChange": false,
-        "processing": true,
-        "serverSide": true,
-        "ajax": "<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro),
-        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-          $($(nRow).find("td")[0]).css({
-            "text-align": "center",
-            "vertical-align": "middle"
-          });
-          $($(nRow).find("td")[1]).css({
-            "text-align": "center",
-            "vertical-align": "middle"
-          });
-          $($(nRow).find("td")[2]).css({
-            "text-align": "center",
-            "vertical-align": "middle"
-          });
-          $($(nRow).find("td")[3]).css({
-            "text-align": "center",
-            "vertical-align": "middle"
-          });
-          $($(nRow).find("td")[4]).css({
-            "text-align": "center",
-            "vertical-align": "middle"
-          });
-          $($(nRow).find("td")[5]).css({
-            "text-align": "center",
-            "vertical-align": "middle"
-          });
-          $($(nRow).find("td")[6]).css({
-            "text-align": "center",
-            "vertical-align": "middle"
-          });
-          $($(nRow).find("td")[7]).css({
-            "text-align": "center",
-            "vertical-align": "middle"
-          });
-          $($(nRow).find("td")[8]).css({
-            "text-align": "center",
-            "vertical-align": "middle"
-          });
-          $($(nRow).find("td")[9]).css({
-            "text-align": "center",
-            "vertical-align": "middle"
-          });
-
-        },
-        "fnDrawCallback": function () {
-          $("#div_load_consulta").hide();
-          $("#div_load_filtro").hide();
-        },
-        "preDrawCallback": function (settings) {
-          $("#div_load_consulta").show();
-          $("#div_load_filtro").show();
-        },
-        "initComplete": function (settings, json) {
-          $("#div_load_consulta").hide();
-          $("#div_load_filtro").hide();
-        },
-        "aoColumnDefs": [
-          // Desabilitando Ordenacao coluna
-          {
-            'bSortable': false,
-            'aTargets': [0, 1, 2]
-
-          },
-          // Desabilitando Busca coluna
-          {
-            "bSearchable": false,
-            "aTargets": [0, 1, 2]
-          }
-        ],
-        // Definindo ordenação padrão 3 coluna
-        "order": [
-          [3, "desc"]
-        ],
-        "language": {
-          "lengthMenu": "Exibindo _MENU_ registros por Página",
-          "zeroRecords": "Desculpe - Nenhum registro encontrado",
-          "info": "Exibindo página _PAGE_ de _PAGES_ ( Total de _TOTAL_ Registros )",
-          "infoEmpty": "",
-          "infoFiltered": "(Exibindo _MAX_ total registros)",
-          "sSearch": "Pesquisar",
-          "oPaginate": {
-            "sNext": "",
-            "sPrevious": "",
-            "sFirst": "",
-            "sLast": ""
-          },
-          "oAria": {
-            "sSortAscending": ": Ordenar colunas de forma ascendente",
-            "sSortDescending": ": Ordenar colunas de forma descendente"
-          }
-        }
-      });
-      function Novo() {
-        $("#titulo_modal_novo_lista").html("Novo Cliente");
-        $("#novoClienteListaModal").modal("show");
-        $("#nome_cliente_lista").val("");
-        $("#email_cliente_lista").val("");
-        $("#telefone_cliente_lista").val("");
-        $("#endereco_cliente_lista").val("");
-        $("#cep_cliente_lista").val("");
-        $("#numero_rua_cliente_lista").val("");
+      if ($("#email_cliente_lista").val() == "" || $("#email_cliente_lista").val() == null) {
+        Swal.fire({
+          title: 'Informe o email do Cliente',
+          icon: 'error'
+        });
+        $("#email_cliente_lista").focus();
+        return false;
       }
-      function Salvar() {
-        $("#novoClienteListaModal").modal("show");
 
-        if ($("#nome_cliente_lista").val() == "" || $("#nome_cliente_lista").val() == null) {
-          alert("Informe o nome do Cliente");
-          $("#nome_cliente_lista").focus();
-          return false;
-        }
-        if ($("#email_cliente_lista").val() == "" || $("#email_cliente_lista").val() == null) {
-          alert("Informe o email do Cliente");
-          $("#email_cliente_lista").focus();
-          return false;
-        }
-        if ($("#telefone_cliente_lista").val() == "" || $("#telefone_cliente_lista").val() == null) {
-          alert("Informe o telefone do Cliente");
-          $("#telefone_cliente_lista").focus();
-          return false;
-        }
-        if ($("#endereco_cliente_lista").val() == "" || $("#endereco_cliente_lista").val() == null) {
-          alert("Informe o endereco do Cliente");
-          $("#endereco_cliente_lista").focus();
-          return false;
-        }
-        var parametros = new FormData();
+      if ($("#telefone_cliente_lista").val() == "" || $("#telefone_cliente_lista").val() == null) {
+        Swal.fire({
+          title: 'Informe o telefone do Cliente',
+          icon: 'error'
+        });
+        $("#telefone_cliente_lista").focus();
+        return false;
+      }
 
-        parametros.append("metodo", "Salvar");
-        parametros.append("id_cliente_lista", $("#hid_id_cliente_lista").val());
-        parametros.append("nome_cliente_lista", $("#nome_cliente_lista").val());
-        parametros.append("email_cliente_lista", $("#email_cliente_lista").val());
-        parametros.append("telefone_cliente_lista", $("#telefone_cliente_lista").val());
-        parametros.append("endereco_cliente_lista", $("#endereco_cliente_lista").val());
-        parametros.append("cep_cliente_lista", $("#cep_cliente_lista").val());
-        parametros.append("numero_rua_cliente_lista", $("#numero_rua_cliente_lista").val());
+      if ($("#endereco_cliente_lista").val() == "" || $("#endereco_cliente_lista").val() == null) {
+        Swal.fire({
+          title: 'Informe o endereco do Cliente',
+          icon: 'error'
+        });
+        $("#endereco_cliente_lista").focus();
+        return false;
+      }
+      return true;
+    }
 
-        $.ajax({
-          type: "POST",
-          url: '<?php echo $_SERVER['PHP_SELF'] ?>',
-          data: parametros,
-          contentType: false,
-          processData: false,
-          beforeSend: function () {
-            $('#div_load_consulta').show();
-          },
-          success: function (retorno) {
-            $('#div_load_consulta').hide();
-            try {
-              var arRetorno = JSON.parse(retorno);
-              alert(arRetorno[1]);
-              if (arRetorno[0] == "1") {
+    function Salvar() {
+      $("#novoClienteListaModal").modal("show");
+
+      if (!validarCampo()) {
+        return false;
+      }
+
+      var parametros = new FormData();
+
+      parametros.append("metodo", "Salvar");
+      parametros.append("id_cliente_lista", $("#hid_id_cliente_lista").val());
+      parametros.append("nome_cliente_lista", $("#nome_cliente_lista").val());
+      parametros.append("email_cliente_lista", $("#email_cliente_lista").val());
+      parametros.append("telefone_cliente_lista", $("#telefone_cliente_lista").val());
+      parametros.append("endereco_cliente_lista", $("#endereco_cliente_lista").val());
+      parametros.append("cep_cliente_lista", $("#cep_cliente_lista").val());
+      parametros.append("numero_rua_cliente_lista", $("#numero_rua_cliente_lista").val());
+
+      $.ajax({
+        type: "POST",
+        url: '<?php echo $_SERVER['PHP_SELF'] ?>',
+        data: parametros,
+        contentType: false,
+        processData: false,
+        beforeSend: function () {
+          $('#div_load_consulta').show();
+        },
+        success: function (retorno) {
+          $('#div_load_consulta').hide();
+          try {
+            var arRetorno = JSON.parse(retorno);
+            if (arRetorno[0] == "1") {
+              Swal.fire({
+                title: 'Pedido cadastrado com sucesso!',
+                icon: 'success'
+              }).then(() => {
                 $("#novoClienteListaModal").hide();
                 console.log('aqui');
                 GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
                 window.location.reload();
-              } else if (arRetorno[0] === 9999) {
-                console.log("deslogado, safado");
-              } else {
-                console.log(arRetorno);
-              }
-            } catch (erro) {
-              console.log(retorno);
+              });
+            } else if (arRetorno[0] === 9999) {
+              console.log("deslogado, safado");
+            } else {
               console.log(arRetorno);
-              alert("ERRO");
             }
+          } catch (erro) {
+            console.log(retorno);
+            console.log(arRetorno);
+            alert("ERRO");
           }
-        });
-      }
-      function InativarCliente(codigo) {
-        Swal.fire({
-          title: 'Tem certeza que deseja inativar este Cliente?',
-          showCancelButton: true,
-          confirmButtonText: 'Sim',
-          cancelButtonText: 'Não',
-          icon: 'question'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            var parametros = new FormData();
-            parametros.append("metodo", "InativarCliente");
-            parametros.append("codigo", codigo);
+        }
+      });
+    }
+    function InativarCliente(codigo) {
+      Swal.fire({
+        title: 'Tem certeza que deseja inativar este registro?',
+        showCancelButton: true,
+        confirmButtonText: 'Sim',
+        cancelButtonText: 'Não',
+        icon: 'question'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          var parametros = new FormData();
+          parametros.append("metodo", "InativarCliente");
+          parametros.append("codigo", codigo);
 
-            $.ajax({
-              type: "POST",
-              url: '<?php echo $_SERVER['PHP_SELF']; ?>',
-              data: parametros,
-              contentType: false,
-              processData: false,
-              beforeSend: function () {
-                $('#div_load_consulta').show();
-              },
-              success: function (retorno) {
-                $('#div_load_consulta').hide();
-                try {
-                  var arRetorno = JSON.parse(retorno);
-                  alert(arRetorno[1]);
+          $.ajax({
+            type: "POST",
+            url: '<?php echo $_SERVER['PHP_SELF']; ?>',
+            data: parametros,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+              $('#div_load_consulta').show();
+            },
+            success: function (retorno) {
+              $('#div_load_consulta').hide();
+              try {
+                var arRetorno = JSON.parse(retorno);
+                alert(arRetorno[1]);
 
-                  if (arRetorno[0] == "1") {
-                    GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
-                  } else if (arRetorno[0] == "9999") {
-                    window.location = '../includes/logout.php';
-                  } else {
-                    console.log(retorno);
-                    console.log(arRetorno);
-                  }
-                } catch (erro) {
-                  alert("Não foi possível realizar esta operação! Contate a Skunby Tecnologia (erro 3333).");
+                if (arRetorno[0] == "1") {
+                  GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
+                } else if (arRetorno[0] == "9999") {
+                  window.location = '../includes/logout.php';
+                } else {
                   console.log(retorno);
                   console.log(arRetorno);
                 }
+              } catch (erro) {
+                alert("Não foi possível realizar esta operação! Contate a Skunby Tecnologia (erro 3333).");
+                console.log(retorno);
+                console.log(arRetorno);
               }
-            });
-          }
-        });
-      }
-      function Carregar(codigo, flag_disabled) {
-        function StringPad(str, pad, length) {
-          str = str.toString();
-          while (str.length < length) {
-            str = pad + str;
-          }
-          return str;
-        }
-        // var btn = document.getElementById('btn_cadastrar');
-        // if (btn.classList.contains('btn-primary')) {
-        //   btn.innerHTML = 'EDITAR';
-        //   btn.style.visibility = 'visible';
-        // }
-        $("#hid_id_cliente_lista").val(codigo);
-        var parametros = new FormData();
-        parametros.append("metodo", "Carregar");
-        parametros.append("codigo", codigo);
-        $.ajax({
-          type: "POST",
-          url: '<?php echo $_SERVER['PHP_SELF']; ?>',
-          data: parametros,
-          contentType: false,
-          processData: false,
-          beforeSend: function () {
-            $('#div_load_consulta').show();
-          },
-          success: function (retorno) {
-            $('#div_load_consulta').hide();
-            try {
-              var arRetorno = JSON.parse(retorno);
-              $("#nome_cliente_lista").val(arRetorno.nome_cliente_lista);
-              $("#email_cliente_lista").val(arRetorno.email_cliente_lista);
-              $("#telefone_cliente_lista").val(arRetorno.telefone_cliente_lista);
-              $("#endereco_cliente_lista").val(arRetorno.endereco_cliente_lista);
-              $("#cep_cliente_lista").val(arRetorno.cep_cliente_lista);
-              $("#numero_rua_cliente_lista").val(arRetorno.numero_rua_cliente_lista);
-
-              $("#nome_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
-              $("#email_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
-              $("#telefone_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
-              $("#endereco_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
-              $("#cep_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
-              $("#numero_rua_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
-              $("#novoClienteListaModal").modal("show");
-              flag_disabled == "1" ? $("#titulo_modal_novo_lista").html("Editação do cliente Cód: " + StringPad(codigo, "0000")) : $("#titulo_modal_novo_lista").html("Detalhe do cliente Cód: " + StringPad(codigo, "0000"));
-            } catch (erro) {
-              alert("Não foi possível realizar esta operação! Contate a Skunby Tecnologia2222.");
-              console.log(retorno);
-              console.log(arRetorno);
             }
-          }
-        });
-      }
-      function buscarEnderecoPorCep() {
-        var cep = document.getElementById('cep_cliente_lista').value;
-
-        if (cep.length === 8 && /^[0-9]+$/.test(cep)) {
-          var xhr = new XMLHttpRequest();
-          xhr.open('GET', 'https://viacep.com.br/ws/' + cep + '/json/', true);
-          xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-              var response = JSON.parse(xhr.responseText);
-              if (!response.erro) {
-                document.getElementById('endereco_cliente_lista').value = response.logradouro + ', ' + response.bairro + ', ' + response.localidade + ' - ' + response.uf;
-              } else {
-                alert('CEP não encontrado.');
-                document.getElementById('endereco_cliente_lista').value = '';
-              }
-            } else if (xhr.readyState === 4) {
-              alert('Erro ao buscar o CEP.');
-            }
-          };
-          xhr.send();
-        } else {
-          alert('CEP inválido.');
-          document.getElementById('endereco_cliente_lista').value = '';
+          });
         }
+      });
+    }
+    function Carregar(codigo, flag_disabled) {
+      function StringPad(str, pad, length) {
+        str = str.toString();
+        while (str.length < length) {
+          str = pad + str;
+        }
+        return str;
       }
+      // var btn = document.getElementById('btn_cadastrar');
+      // if (btn.classList.contains('btn-primary')) {
+      //   btn.innerHTML = 'EDITAR';
+      //   btn.style.visibility = 'visible';
+      // }
+      $("#hid_id_cliente_lista").val(codigo);
+      var parametros = new FormData();
+      parametros.append("metodo", "Carregar");
+      parametros.append("codigo", codigo);
+      $.ajax({
+        type: "POST",
+        url: '<?php echo $_SERVER['PHP_SELF']; ?>',
+        data: parametros,
+        contentType: false,
+        processData: false,
+        beforeSend: function () {
+          $('#div_load_consulta').show();
+        },
+        success: function (retorno) {
+          $('#div_load_consulta').hide();
+          try {
+            var arRetorno = JSON.parse(retorno);
+            $("#nome_cliente_lista").val(arRetorno.nome_cliente_lista);
+            $("#email_cliente_lista").val(arRetorno.email_cliente_lista);
+            $("#telefone_cliente_lista").val(arRetorno.telefone_cliente_lista);
+            $("#endereco_cliente_lista").val(arRetorno.endereco_cliente_lista);
+            $("#cep_cliente_lista").val(arRetorno.cep_cliente_lista);
+            $("#numero_rua_cliente_lista").val(arRetorno.numero_rua_cliente_lista);
 
+            $("#nome_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#email_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#telefone_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#endereco_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#cep_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#numero_rua_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#novoClienteListaModal").modal("show");
+            flag_disabled == "1" ? $("#titulo_modal_novo_lista").html("Editação do cliente Cód: " + StringPad(codigo, "0000")) : $("#titulo_modal_novo_lista").html("Detalhe do cliente Cód: " + StringPad(codigo, "0000"));
+            if (flag_disabled == 0) {
+              $("#btn_cadastrar").hide();
+            } if (flag_disabled == 1) {
+              $("#btn_cadastrar").show();
+              var btn = $("#btn_cadastrar");
+              btn.text("Editar");
 
+            }
+          } catch (erro) {
+            alert("Não foi possível realizar esta operação! Contate a Skunby Tecnologia2222.");
+            console.log(retorno);
+            console.log(arRetorno);
+          }
+        }
+      });
+    }
+    function buscarEnderecoPorCep() {
+      var cep = document.getElementById('cep_cliente_lista').value;
 
-
-
-    </script>
+      if (cep.length === 8 && /^[0-9]+$/.test(cep)) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://viacep.com.br/ws/' + cep + '/json/', true);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            if (!response.erro) {
+              document.getElementById('endereco_cliente_lista').value = response.logradouro + ', ' + response.bairro + ', ' + response.localidade + ' - ' + response.uf;
+            } else {
+              alert('CEP não encontrado.');
+              document.getElementById('endereco_cliente_lista').value = '';
+            }
+          } else if (xhr.readyState === 4) {
+            alert('Erro ao buscar o CEP.');
+          }
+        };
+        xhr.send();
+      } else {
+        alert('CEP inválido.');
+        document.getElementById('endereco_cliente_lista').value = '';
+      }
+    }
+  </script>
 </body>
 
 </html>

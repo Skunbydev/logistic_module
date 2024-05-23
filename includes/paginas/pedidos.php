@@ -408,7 +408,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
 
 
             <div class="modal-footer bg-primary">
-              <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="recarregarPagina();">Fechar</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="window.location.reload();">Fechar</button>
               <button type="button" class="btn btn-info" id="btn_cadastrar" onclick="Salvar()">Cadastrar</button>
             </div>
           </div>
@@ -416,516 +416,516 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
       </div>
     </div>
   </div>
-</body>
 
-<script>
-  $(document).ready(function () {
-    $('#codigo_categoria_produto, #id_cliente_lista, #nome_produto').select2({
-      dropdownParent: $("#novoPedidoModal")
+
+  <script>
+    $(document).ready(function () {
+      $('#codigo_categoria_produto, #id_cliente_lista, #nome_produto').select2({
+        dropdownParent: $("#novoPedidoModal")
+      });
     });
-  });
 
 
 
-  var GLTabela = null;
-  var GLFiltro = [];
+    var GLTabela = null;
+    var GLFiltro = [];
 
-  GLTabela = $('#tabela_consulta').DataTable({
-    "iDisplayLength": 100,
-    "searching": false,
-    "lengthChange": false,
-    "processing": true,
-    "serverSide": true,
-    "ajax": "<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro),
-    "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-      $($(nRow).find("td")[0]).css({
-        "text-align": "center",
-        "vertical-align": "middle"
-      });
-      $($(nRow).find("td")[1]).css({
-        "text-align": "center",
-        "vertical-align": "middle"
-      });
-      $($(nRow).find("td")[2]).css({
-        "text-align": "center",
-        "vertical-align": "middle"
-      });
-      $($(nRow).find("td")[3]).css({
-        "text-align": "center",
-        "vertical-align": "middle"
-      });
-      $($(nRow).find("td")[4]).css({
-        "text-align": "center",
-        "vertical-align": "middle"
-      });
-      $($(nRow).find("td")[5]).css({
-        "text-align": "center",
-        "vertical-align": "middle"
-      });
-      $($(nRow).find("td")[6]).css({
-        "text-align": "center",
-        "vertical-align": "middle"
-      });
-      $($(nRow).find("td")[7]).css({
-        "text-align": "center",
-        "vertical-align": "middle"
-      });
-      $($(nRow).find("td")[8]).css({
-        "text-align": "center",
-        "vertical-align": "middle"
-      });
-      $($(nRow).find("td")[9]).css({
-        "text-align": "center",
-        "vertical-align": "middle"
-      });
-
-    },
-    "fnDrawCallback": function () {
-      $("#div_load_consulta").hide();
-      $("#div_load_filtro").hide();
-    },
-    "preDrawCallback": function (settings) {
-      $("#div_load_consulta").show();
-      $("#div_load_filtro").show();
-    },
-    "initComplete": function (settings, json) {
-      $("#div_load_consulta").hide();
-      $("#div_load_filtro").hide();
-    },
-    "aoColumnDefs": [
-      // Desabilitando Ordenacao coluna
-      {
-        'bSortable': false,
-        'aTargets': [0, 1, 2]
+    GLTabela = $('#tabela_consulta').DataTable({
+      "iDisplayLength": 100,
+      "searching": false,
+      "lengthChange": false,
+      "processing": true,
+      "serverSide": true,
+      "ajax": "<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro),
+      "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        $($(nRow).find("td")[0]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[1]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[2]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[3]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[4]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[5]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[6]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[7]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[8]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
+        $($(nRow).find("td")[9]).css({
+          "text-align": "center",
+          "vertical-align": "middle"
+        });
 
       },
-      // Desabilitando Busca coluna
-      {
-        "bSearchable": false,
-        "aTargets": [0, 1, 2]
-      }
-    ],
-    // Definindo ordenação padrão 3 coluna
-    "order": [
-      [3, "desc"]
-    ],
-    "language": {
-      "lengthMenu": "Exibindo _MENU_ registros por Página",
-      "zeroRecords": "Desculpe - Nenhum registro encontrado",
-      "info": "Exibindo página _PAGE_ de _PAGES_ ( Total de _TOTAL_ Registros )",
-      "infoEmpty": "",
-      "infoFiltered": "(Exibindo _MAX_ total registros)",
-      "sSearch": "Pesquisar",
-      "oPaginate": {
-        "sNext": "",
-        "sPrevious": "",
-        "sFirst": "",
-        "sLast": ""
+      "fnDrawCallback": function () {
+        $("#div_load_consulta").hide();
+        $("#div_load_filtro").hide();
       },
-      "oAria": {
-        "sSortAscending": ": Ordenar colunas de forma ascendente",
-        "sSortDescending": ": Ordenar colunas de forma descendente"
+      "preDrawCallback": function (settings) {
+        $("#div_load_consulta").show();
+        $("#div_load_filtro").show();
+      },
+      "initComplete": function (settings, json) {
+        $("#div_load_consulta").hide();
+        $("#div_load_filtro").hide();
+      },
+      "aoColumnDefs": [
+        // Desabilitando Ordenacao coluna
+        {
+          'bSortable': false,
+          'aTargets': [0, 1, 2]
+
+        },
+        // Desabilitando Busca coluna
+        {
+          "bSearchable": false,
+          "aTargets": [0, 1, 2]
+        }
+      ],
+      // Definindo ordenação padrão 3 coluna
+      "order": [
+        [3, "desc"]
+      ],
+      "language": {
+        "lengthMenu": "Exibindo _MENU_ registros por Página",
+        "zeroRecords": "Desculpe - Nenhum registro encontrado",
+        "info": "Exibindo página _PAGE_ de _PAGES_ ( Total de _TOTAL_ Registros )",
+        "infoEmpty": "",
+        "infoFiltered": "(Exibindo _MAX_ total registros)",
+        "sSearch": "Pesquisar",
+        "oPaginate": {
+          "sNext": "",
+          "sPrevious": "",
+          "sFirst": "",
+          "sLast": ""
+        },
+        "oAria": {
+          "sSortAscending": ": Ordenar colunas de forma ascendente",
+          "sSortDescending": ": Ordenar colunas de forma descendente"
+        }
       }
-    }
-  });
+    });
 
-  function fetchClientAddress() {
-    var selectElement = document.getElementById('id_cliente_lista');
-    var selectedClientId = selectElement.value;
-    document.getElementById('hid_codigoCategoria').value = selectedClientId;
+    function fetchClientAddress() {
+      var selectElement = document.getElementById('id_cliente_lista');
+      var selectedClientId = selectElement.value;
+      document.getElementById('hid_codigoCategoria').value = selectedClientId;
 
-    if (selectedClientId) {
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', 'pedidos.php', true);
-      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            try {
-              var response = JSON.parse(xhr.responseText);
-              if (response.success) {
-                document.getElementById('endereco_cliente').innerHTML = response.address;
-                document.getElementById('numero_endereco_cliente').value = response.number;
-                document.getElementById('cep_cliente').value = response.cep;
-              } else {
-                document.getElementById('endereco_cliente').innerHTML = 'Endereço não encontrado';
+      if (selectedClientId) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'pedidos.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              try {
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                  document.getElementById('endereco_cliente').innerHTML = response.address;
+                  document.getElementById('numero_endereco_cliente').value = response.number;
+                  document.getElementById('cep_cliente').value = response.cep;
+                } else {
+                  document.getElementById('endereco_cliente').innerHTML = 'Endereço não encontrado';
+                }
+              } catch (e) {
+                console.error('Erro ao analisar resposta JSON: ', e);
+                console.log(e.JSON);
+                document.getElementById('endereco_cliente').innerHTML = 'Erro ao buscar endereço';
               }
-            } catch (e) {
-              console.error('Erro ao analisar resposta JSON: ', e);
-              console.log(e.JSON);
+            } else {
+              console.error('Erro na requisição: ', xhr.statusText);
               document.getElementById('endereco_cliente').innerHTML = 'Erro ao buscar endereço';
             }
-          } else {
-            console.error('Erro na requisição: ', xhr.statusText);
-            document.getElementById('endereco_cliente').innerHTML = 'Erro ao buscar endereço';
           }
-        }
-      };
-      xhr.send('client_id=' + selectedClientId);
-    } else {
-      document.getElementById('endereco_cliente').innerHTML = '';
+        };
+        xhr.send('client_id=' + selectedClientId);
+      } else {
+        document.getElementById('endereco_cliente').innerHTML = '';
+      }
     }
-  }
 
-  var produtoSelecionado = null;
+    var produtoSelecionado = null;
 
-  var produtos = [];
-  function recarregarPagina() {
-    window.location.reload(true);
-  }
-  function fetchProdutos() {
-    var selectElement = document.getElementById('codigo_categoria_produto');
-    var selectedCategoryId = selectElement.value;
-    document.getElementById('hid_valorCliente').value = selectedCategoryId;
+    var produtos = [];
+    function recarregarPagina() {
+      window.location.reload(true);
+    }
+    function fetchProdutos() {
+      var selectElement = document.getElementById('codigo_categoria_produto');
+      var selectedCategoryId = selectElement.value;
+      document.getElementById('hid_valorCliente').value = selectedCategoryId;
 
-    if (selectedCategoryId) {
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', 'pedidos.php', true);
-      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            try {
-              var response = JSON.parse(xhr.responseText);
+      if (selectedCategoryId) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'pedidos.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              try {
+                var response = JSON.parse(xhr.responseText);
 
 
-              var nomeProduto = document.getElementById('nome_produto');
-              nomeProduto.innerHTML = '';
-              produtos = [];
+                var nomeProduto = document.getElementById('nome_produto');
+                nomeProduto.innerHTML = '';
+                produtos = [];
 
-              if (response.success) {
-                response.products.forEach(function (product) {
-                  produtos.push(product);
+                if (response.success) {
+                  response.products.forEach(function (product) {
+                    produtos.push(product);
 
+                    var option = document.createElement('option');
+                    option.value = product.nome_produto;
+                    option.textContent = product.nome_produto;
+                    nomeProduto.appendChild(option);
+                  });
+                  produtoSelecionado = produtos[0];
+                  document.getElementById('valor_produto_banco').value = 'R$ ' + produtoSelecionado.valor_produto;
+                  document.getElementById('quantidade_produto_banco').value = produtoSelecionado.quantidade_produto;
+
+                } else {
                   var option = document.createElement('option');
-                  option.value = product.nome_produto;
-                  option.textContent = product.nome_produto;
+                  option.textContent = 'Nenhum produto disponível';
                   nomeProduto.appendChild(option);
-                });
-                produtoSelecionado = produtos[0];
-                document.getElementById('valor_produto_banco').value = 'R$ ' + produtoSelecionado.valor_produto;
-                document.getElementById('quantidade_produto_banco').value = produtoSelecionado.quantidade_produto;
-
-              } else {
-                var option = document.createElement('option');
-                option.textContent = 'Nenhum produto disponível';
-                nomeProduto.appendChild(option);
+                }
+              } catch (e) {
+                console.error('Erro ao analisar resposta JSON: ', e);
+                document.getElementById('nome_produto').innerHTML = 'Erro ao buscar produtos';
               }
-            } catch (e) {
-              console.error('Erro ao analisar resposta JSON: ', e);
+            } else {
+              console.error('Erro na requisição: ', xhr.statusText);
               document.getElementById('nome_produto').innerHTML = 'Erro ao buscar produtos';
             }
-          } else {
-            console.error('Erro na requisição: ', xhr.statusText);
-            document.getElementById('nome_produto').innerHTML = 'Erro ao buscar produtos';
           }
-        }
-      };
-      xhr.send('categoria_id=' + selectedCategoryId);
-    } else {
-      document.getElementById('nome_produto').innerHTML = '<option value="">selecione</option>';
+        };
+        xhr.send('categoria_id=' + selectedCategoryId);
+      } else {
+        document.getElementById('nome_produto').innerHTML = '<option value="">selecione</option>';
+      }
     }
-  }
-  function calcularValorTotal() {
-    var nomeProdutoSelect = document.getElementById('nome_produto');
-    var produtoSelecionadoNome = nomeProdutoSelect.value;
-    var produtoSelecionado = produtos.find(p => p.nome_produto === produtoSelecionadoNome);
+    function calcularValorTotal() {
+      var nomeProdutoSelect = document.getElementById('nome_produto');
+      var produtoSelecionadoNome = nomeProdutoSelect.value;
+      var produtoSelecionado = produtos.find(p => p.nome_produto === produtoSelecionadoNome);
 
-    if (produtoSelecionado) {
-      var quantidadeDesejada = parseInt(document.getElementById('quantidade_produto').value);
-      var quantidadeDisponivel = parseInt(produtoSelecionado.quantidade_produto);
-      var valorUnitario = parseFloat(produtoSelecionado.valor_produto.replace(',', '.'));
+      if (produtoSelecionado) {
+        var quantidadeDesejada = parseInt(document.getElementById('quantidade_produto').value);
+        var quantidadeDisponivel = parseInt(produtoSelecionado.quantidade_produto);
+        var valorUnitario = parseFloat(produtoSelecionado.valor_produto.replace(',', '.'));
 
-      if (isNaN(quantidadeDesejada) || quantidadeDesejada <= 0) {
-        document.getElementById('valor_total').value = 'Quantidade inválida';
-        return;
+        if (isNaN(quantidadeDesejada) || quantidadeDesejada <= 0) {
+          document.getElementById('valor_total').value = 'Quantidade inválida';
+          return;
+        }
+
+        if (quantidadeDesejada > quantidadeDisponivel) {
+          document.getElementById('valor_total').value = 'Apenas ' + quantidadeDisponivel + ' disponíveis';
+          Swal.fire({
+            title: 'Quantidade do produto maior que a disponível em estoque.',
+            icon: 'error'
+          }).then(() => {
+            $("#quantidade_produto").focus();
+          });
+        } else {
+          var valorTotal = quantidadeDesejada * valorUnitario;
+          document.getElementById('valor_total').value = 'R$ ' + valorTotal.toFixed(2).replace('.', ',');
+        }
+      }
+    }
+
+    function Novo() {
+      $("#titulo_modal_novo_pedido").html("Novo Pedido");
+
+
+      // $("#id_cliente_lista").select2("val", "");
+      //$("#endereco_cliente").val("");
+      $("#numero_endereco_cliente").val("");
+      $("#cep_cliente").val("");
+      $("#codigo_categoria_produto").select2("val", "");
+      $("#nome_produto").select2("val", "");
+      $("#quantidade_produto").val("");
+      // $("#valor_total").val("");
+      $("#novoPedidoModal").modal("show");
+    }
+
+    function validarCampos() {
+      if ($("#id_cliente_lista").val() == "" || $("#id_cliente_lista").val() == null) {
+        Swal.fire({
+          title: 'Selecione o cliente',
+          icon: 'warning'
+        }).then(() => {
+          $("#id_cliente_lista").focus();
+        });
+        return false;
+      }
+      if ($("#endereco_cliente").val() == "" || $("#endereco_cliente").val() == null) {
+        Swal.fire({
+          title: 'Informe o endereço',
+          icon: 'warning'
+        }).then(() => {
+          $("#endereco_cliente").focus();
+        });
+        return false;
+      }
+      if ($("#numero_endereco_cliente").val() == "" || $("#numero_endereco_cliente").val() == null) {
+        Swal.fire({
+          title: 'Informe o número do endereço',
+          icon: 'warning'
+        }).then(() => {
+          $("#numero_endereco_cliente").focus();
+        });
+        return false;
+      }
+      if ($("#cep_cliente").val() == "" || $("#cep_cliente").val() == null) {
+        Swal.fire({
+          title: 'Informe o cep do endereço',
+          icon: 'warning'
+        }).then(() => {
+          $("#cep_cliente").focus();
+        });
+        return false;
+      }
+      if ($("#codigo_categoria_produto").val() == "" || $("#codigo_categoria_produto").val() == null) {
+        Swal.fire({
+          title: 'Informe a categoria do produto',
+          icon: 'warning'
+        }).then(() => {
+          $("#codigo_categoria_produto").focus();
+        });
+        return false;
+      }
+      if ($("#nome_produto").val() == "" || $("#nome_produto").val() == null) {
+        Swal.fire({
+          title: 'Informe o nome do produto',
+          icon: 'warning'
+        }).then(() => {
+          $("#nome_produto").focus();
+        });
+        return false;
+      }
+      if ($("#quantidade_produto").val() == "" || $("#quantidade_produto").val() == null) {
+        Swal.fire({
+          title: 'Informe a quantidade do produto',
+          icon: 'warning'
+        }).then(() => {
+          $("#nome_produto").focus();
+        });
+        return false;
       }
 
+      return true;
+    }
+
+    function Salvar() {
+      var modal = $("#novoPedidoModal").modal("show");
+
+      if (!validarCampos()) {
+        return false;
+      }
+
+      var quantidadeDesejada = parseInt(document.getElementById('quantidade_produto').value);
+      var quantidadeDisponivel = parseInt(produtoSelecionado.quantidade_produto);
+
       if (quantidadeDesejada > quantidadeDisponivel) {
-        document.getElementById('valor_total').value = 'Apenas ' + quantidadeDisponivel + ' disponíveis';
         Swal.fire({
-          title: 'Quantidade do produto maior que a disponível em estoque.',
+          title: 'Quantidade maior que a disponível em estoque',
           icon: 'error'
         }).then(() => {
           $("#quantidade_produto").focus();
         });
-      } else {
-        var valorTotal = quantidadeDesejada * valorUnitario;
-        document.getElementById('valor_total').value = 'R$ ' + valorTotal.toFixed(2).replace('.', ',');
+        return false;
       }
-    }
-  }
-
-  function Novo() {
-    $("#titulo_modal_novo_pedido").html("Novo Pedido");
 
 
-    // $("#id_cliente_lista").select2("val", "");
-    //$("#endereco_cliente").val("");
-    $("#numero_endereco_cliente").val("");
-    $("#cep_cliente").val("");
-    $("#codigo_categoria_produto").select2("val", "");
-    $("#nome_produto").select2("val", "");
-    $("#quantidade_produto").val("");
-    // $("#valor_total").val("");
-    $("#novoPedidoModal").modal("show");
-  }
+      var parametros = new FormData();
+      parametros.append("metodo", "Salvar");
+      parametros.append("id_pedido", $("#hid_id_pedido").val());
+      parametros.append("id_cliente_lista", $("#id_cliente_lista").val());
+      parametros.append("endereco_cliente", $("#endereco_cliente").val());
+      parametros.append("numero_endereco_cliente", $("#numero_endereco_cliente").val());
+      parametros.append("cep_cliente", $("#cep_cliente").val());
+      parametros.append("codigo_categoria_produto", $("#codigo_categoria_produto").val());
+      parametros.append("nome_produto", $("#nome_produto").val());
+      parametros.append("quantidade_produto", $("#quantidade_produto").val());
+      parametros.append("valor_total", $("#valor_total").val());
 
-  function validarCampos() {
-    if ($("#id_cliente_lista").val() == "" || $("#id_cliente_lista").val() == null) {
-      Swal.fire({
-        title: 'Selecione o cliente',
-        icon: 'warning'
-      }).then(() => {
-        $("#id_cliente_lista").focus();
+      $.ajax({
+        type: "POST",
+        url: '<?php echo $_SERVER['PHP_SELF'] ?>',
+        data: parametros,
+        contentType: false,
+        processData: false,
+        beforeSend: function () {
+          $('#div_load_consulta').show();
+        },
+        success: function (retorno) {
+          $('#div_load_consulta').hide();
+          try {
+            var arRetorno = JSON.parse(retorno);
+            alert(arRetorno[1]);
+            if (arRetorno[0] == "1") {
+              Swal.fire({
+                title: 'Pedido cadastrado com sucesso!',
+                icon: 'success'
+              }).then(() => {
+                $("#novoPedidoModal").hide();
+                GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
+                window.location.reload();
+              });
+            } else if (arRetorno[0] === 9999) {
+              console.log("deslogado, safado");
+            } else {
+              console.log(arRetorno);
+            }
+          } catch (erro) {
+            console.log(retorno);
+            console.log(arRetorno);
+            alert("ERRO");
+          }
+        },
+        error: function () {
+          alert("Ocorreu um erro ao salvar os dados. Por favor, tente novamente mais tarde.");
+        }
       });
-      return false;
     }
-    if ($("#endereco_cliente").val() == "" || $("#endereco_cliente").val() == null) {
-      Swal.fire({
-        title: 'Informe o endereço',
-        icon: 'warning'
-      }).then(() => {
-        $("#endereco_cliente").focus();
-      });
-      return false;
-    }
-    if ($("#numero_endereco_cliente").val() == "" || $("#numero_endereco_cliente").val() == null) {
-      Swal.fire({
-        title: 'Informe o número do endereço',
-        icon: 'warning'
-      }).then(() => {
-        $("#numero_endereco_cliente").focus();
-      });
-      return false;
-    }
-    if ($("#cep_cliente").val() == "" || $("#cep_cliente").val() == null) {
-      Swal.fire({
-        title: 'Informe o cep do endereço',
-        icon: 'warning'
-      }).then(() => {
-        $("#cep_cliente").focus();
-      });
-      return false;
-    }
-    if ($("#codigo_categoria_produto").val() == "" || $("#codigo_categoria_produto").val() == null) {
-      Swal.fire({
-        title: 'Informe a categoria do produto',
-        icon: 'warning'
-      }).then(() => {
-        $("#codigo_categoria_produto").focus();
-      });
-      return false;
-    }
-    if ($("#nome_produto").val() == "" || $("#nome_produto").val() == null) {
-      Swal.fire({
-        title: 'Informe o nome do produto',
-        icon: 'warning'
-      }).then(() => {
-        $("#nome_produto").focus();
-      });
-      return false;
-    }
-    if ($("#quantidade_produto").val() == "" || $("#quantidade_produto").val() == null) {
-      Swal.fire({
-        title: 'Informe a quantidade do produto',
-        icon: 'warning'
-      }).then(() => {
-        $("#nome_produto").focus();
-      });
-      return false;
-    }
-
-    return true;
-  }
-
-  function Salvar() {
-    var modal = $("#novoPedidoModal").modal("show");
-
-    if (!validarCampos()) {
-      return false;
-    }
-
-    var quantidadeDesejada = parseInt(document.getElementById('quantidade_produto').value);
-    var quantidadeDisponivel = parseInt(produtoSelecionado.quantidade_produto);
-
-    if (quantidadeDesejada > quantidadeDisponivel) {
-      Swal.fire({
-        title: 'Quantidade maior que a disponível em estoque',
-        icon: 'error'
-      }).then(() => {
-        $("#quantidade_produto").focus();
-      });
-      return false;
-    }
+    function Carregar(codigo, flag_disabled) {
+      function StringPad(str, pad, length) {
+        str = str.toString();
+        while (str.length < length) {
+          str = pad + str;
+        }
+        return str;
+      }
+      var btn = document.getElementById('btn_cadastrar');
+      if (btn.classList.contains('btn-primary')) {
+        btn.innerHTML = 'EDITAR';
+        btn.style.visibility = 'visible';
+      }
+      $("#hid_id_pedido").val(codigo);
+      var parametros = new FormData();
+      parametros.append("metodo", "Carregar");
+      parametros.append("codigo", codigo);
+      $.ajax({
+        type: "POST",
+        url: '<?php echo $_SERVER['PHP_SELF']; ?>',
+        data: parametros,
+        contentType: false,
+        processData: false,
+        beforeSend: function () {
+          $('#div_load_consulta').show();
+        },
+        success: function (retorno) {
+          $('#div_load_consulta').hide();
+          try {
+            var arRetorno = JSON.parse(retorno);
+            $("#id_cliente_lista").val(arRetorno.id_cliente_lista);
+            $("#endereco_cliente").val(arRetorno.endereco_cliente);
+            $("#numero_endereco_cliente").val(arRetorno.numero_endereco_cliente);
+            $("#cep_cliente").val(arRetorno.cep_cliente);
+            $("#codigo_categoria_produto").select2("val", arRetorno.codigo_categoria_produto);
+            $("#nome_produto").val(arRetorno.nome_produto);
+            $("#quantidade_produto").val(arRetorno.quantidade_produto);
+            $("#valor_total").val(arRetorno.valor_total);
 
 
-    var parametros = new FormData();
-    parametros.append("metodo", "Salvar");
-    parametros.append("id_pedido", $("#hid_id_pedido").val());
-    parametros.append("id_cliente_lista", $("#id_cliente_lista").val());
-    parametros.append("endereco_cliente", $("#endereco_cliente").val());
-    parametros.append("numero_endereco_cliente", $("#numero_endereco_cliente").val());
-    parametros.append("cep_cliente", $("#cep_cliente").val());
-    parametros.append("codigo_categoria_produto", $("#codigo_categoria_produto").val());
-    parametros.append("nome_produto", $("#nome_produto").val());
-    parametros.append("quantidade_produto", $("#quantidade_produto").val());
-    parametros.append("valor_total", $("#valor_total").val());
+            $("#id_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#endereco_cliente").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#numero_endereco_cliente").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#cep_cliente").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#codigo_categoria_produto").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#nome_produto").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#quantidade_produto").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#valor_total").prop("disabled", flag_disabled == "1" ? false : true);
 
-    $.ajax({
-      type: "POST",
-      url: '<?php echo $_SERVER['PHP_SELF'] ?>',
-      data: parametros,
-      contentType: false,
-      processData: false,
-      beforeSend: function () {
-        $('#div_load_consulta').show();
-      },
-      success: function (retorno) {
-        $('#div_load_consulta').hide();
-        try {
-          var arRetorno = JSON.parse(retorno);
-          alert(arRetorno[1]);
-          if (arRetorno[0] == "1") {
-            Swal.fire({
-              title: 'Pedido cadastrado com sucesso!',
-              icon: 'success'
-            }).then(() => {
-              $("#novoPedidoModal").hide();
-              GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
-              window.location.reload();
-            });
-          } else if (arRetorno[0] === 9999) {
-            console.log("deslogado, safado");
-          } else {
+            $("#novoPedidoModal").modal("show");
+            flag_disabled == "1" ? $("#titulo_modal_novo_pedido").html("Editação do produto Cód: " + StringPad(codigo, "0000")) : $("#titulo_modal_novo_pedido").html("Detalhe do produto Cód: " + StringPad(codigo, "0000"));
+            if (flag_disabled == 0) {
+              $("#btn_cadastrar").hide();
+            } if (flag_disabled == 1) {
+              $("#btn_cadastrar").show();
+              var btn = $("#btn_cadastrar");
+              btn.text("Editar");
+
+            }
+          } catch (erro) {
+            alert("Não foi possível realizar esta operação! C-2222.");
+            console.log(retorno);
             console.log(arRetorno);
           }
-        } catch (erro) {
-          console.log(retorno);
-          console.log(arRetorno);
-          alert("ERRO");
         }
-      },
-      error: function () {
-        alert("Ocorreu um erro ao salvar os dados. Por favor, tente novamente mais tarde.");
-      }
-    });
-  }
-  function Carregar(codigo, flag_disabled) {
-    function StringPad(str, pad, length) {
-      str = str.toString();
-      while (str.length < length) {
-        str = pad + str;
-      }
-      return str;
+      });
     }
-    var btn = document.getElementById('btn_cadastrar');
-    if (btn.classList.contains('btn-primary')) {
-      btn.innerHTML = 'EDITAR';
-      btn.style.visibility = 'visible';
-    }
-    $("#hid_id_pedido").val(codigo);
-    var parametros = new FormData();
-    parametros.append("metodo", "Carregar");
-    parametros.append("codigo", codigo);
-    $.ajax({
-      type: "POST",
-      url: '<?php echo $_SERVER['PHP_SELF']; ?>',
-      data: parametros,
-      contentType: false,
-      processData: false,
-      beforeSend: function () {
-        $('#div_load_consulta').show();
-      },
-      success: function (retorno) {
-        $('#div_load_consulta').hide();
-        try {
-          var arRetorno = JSON.parse(retorno);
-          $("#id_cliente_lista").val(arRetorno.id_cliente_lista);
-          $("#endereco_cliente").val(arRetorno.endereco_cliente);
-          $("#numero_endereco_cliente").val(arRetorno.numero_endereco_cliente);
-          $("#cep_cliente").val(arRetorno.cep_cliente);
-          $("#codigo_categoria_produto").select2("val", arRetorno.codigo_categoria_produto);
-          $("#nome_produto").val(arRetorno.nome_produto);
-          $("#quantidade_produto").val(arRetorno.quantidade_produto);
-          $("#valor_total").val(arRetorno.valor_total);
+    function InativarPedido(codigo) {
+      Swal.fire({
+        title: 'Tem certeza que deseja inativar este Pedido?',
+        showCancelButton: true,
+        confirmButtonText: 'Sim',
+        cancelButtonText: 'Não',
+        icon: 'question'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          var parametros = new FormData();
+          parametros.append("metodo", "InativarPedido");
+          parametros.append("codigo", codigo);
 
+          $.ajax({
+            type: "POST",
+            url: '<?php echo $_SERVER['PHP_SELF']; ?>',
+            data: parametros,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+              $('#div_load_consulta').show();
+            },
+            success: function (retorno) {
+              $('#div_load_consulta').hide();
+              try {
+                var arRetorno = JSON.parse(retorno);
+                alert(arRetorno[1]);
 
-          $("#id_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
-          $("#endereco_cliente").prop("disabled", flag_disabled == "1" ? false : true);
-          $("#numero_endereco_cliente").prop("disabled", flag_disabled == "1" ? false : true);
-          $("#cep_cliente").prop("disabled", flag_disabled == "1" ? false : true);
-          $("#codigo_categoria_produto").prop("disabled", flag_disabled == "1" ? false : true);
-          $("#nome_produto").prop("disabled", flag_disabled == "1" ? false : true);
-          $("#quantidade_produto").prop("disabled", flag_disabled == "1" ? false : true);
-          $("#valor_total").prop("disabled", flag_disabled == "1" ? false : true);
-
-          $("#novoPedidoModal").modal("show");
-          flag_disabled == "1" ? $("#titulo_modal_novo_pedido").html("Editação do produto Cód: " + StringPad(codigo, "0000")) : $("#titulo_modal_novo_pedido").html("Detalhe do produto Cód: " + StringPad(codigo, "0000"));
-          if (flag_disabled == 0) {
-            $("#btn_cadastrar").hide();
-          } if (flag_disabled == 1) {
-            $("#btn_cadastrar").show();
-            var btn = $("#btn_cadastrar");
-            btn.text("Editar");
-
-          }
-        } catch (erro) {
-          alert("Não foi possível realizar esta operação! C-2222.");
-          console.log(retorno);
-          console.log(arRetorno);
-        }
-      }
-    });
-  }
-  function InativarPedido(codigo) {
-    Swal.fire({
-      title: 'Tem certeza que deseja inativar este Pedido?',
-      showCancelButton: true,
-      confirmButtonText: 'Sim',
-      cancelButtonText: 'Não',
-      icon: 'question'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        var parametros = new FormData();
-        parametros.append("metodo", "InativarPedido");
-        parametros.append("codigo", codigo);
-
-        $.ajax({
-          type: "POST",
-          url: '<?php echo $_SERVER['PHP_SELF']; ?>',
-          data: parametros,
-          contentType: false,
-          processData: false,
-          beforeSend: function () {
-            $('#div_load_consulta').show();
-          },
-          success: function (retorno) {
-            $('#div_load_consulta').hide();
-            try {
-              var arRetorno = JSON.parse(retorno);
-              alert(arRetorno[1]);
-
-              if (arRetorno[0] == "1") {
-                GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
-              } else if (arRetorno[0] == "9999") {
-                window.location = '../includes/logout.php';
-              } else {
+                if (arRetorno[0] == "1") {
+                  GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
+                } else if (arRetorno[0] == "9999") {
+                  window.location = '../includes/logout.php';
+                } else {
+                  console.log(retorno);
+                  console.log(arRetorno);
+                }
+              } catch (erro) {
+                alert("Não foi possível realizar esta operação! Contate a Skunby Tecnologia (erro 3333).");
                 console.log(retorno);
                 console.log(arRetorno);
               }
-            } catch (erro) {
-              alert("Não foi possível realizar esta operação! Contate a Skunby Tecnologia (erro 3333).");
-              console.log(retorno);
-              console.log(arRetorno);
             }
-          }
-        });
-      }
-    });
-  }
+          });
+        }
+      });
+    }
 
-</script>
+  </script>
 
 </body>
 

@@ -227,36 +227,58 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
 
 <body>
 
-  <?php include './layout.php'; ?>
-  <div class="flex-grow-1 p-3">
-    <div class="row">
-      <section class="content-header">
-        <h2>Estoque <small class="fs-4" style="color: gray">gerenciamento de produtos</small></h2>
-      </section>
-      <section class="content mt-4">
-        <div id="div_consulta" class="row">
-          <div class="col-md-12">
+  <?php include './layout2.php'; ?>
+  <div class="wrapper">
+    <div class="main-content">
+      <div class="flex-grow-1 p-3">
+        <div class="row">
+          <section class="content-header">
+            <h2>Pedidos <small class="fs-4" style="color: gray">gerenciamento de Pedidos</small></h2>
+          </section>
+        </div>
+        <div class="row mt-4">
+          <div id="div_consulta" class="col-md-12">
             <div class="card card-primary card-outline">
-              <div class="card-header bg-primary d-flex justify-content-between align-items-center">
-                <h4 class="card-title text-white mb-0">
-                  LISTA DE PRODUTOS
-                  <a class="hint--right" data-hint="Pesquisar Avançada" style="cursor:pointer;" onclick="PesquisaAvancada()">
-                    <span class="glyphicon glyphicon-search"></span>
+              <div class="card-header">
+                <h3 class="card-title">
+                  LISTA DE PEDIDOS
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <a class='hint--right' data-hint='Pesquisar Avançada' style='cursor:pointer;' onclick="PesquisaAvancada()">
+                    <i title='Editar pedido' class="bi bi-search" style="width: 15px"></i>
                   </a>
-                </h4>
+                </h3>
                 <div class="card-tools">
-                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="bi bi-file-minus-fill text-white"></i></button>
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="bi bi-dash-square"></i></button>
                 </div>
               </div>
               <div class="card-body">
                 <div class="row">
                   <div class="col-md-9">
-                    <div class="btn-group gap-2">
+                    <div class="form-group">
                       <input type="hidden" id="hid_id_produto">
-                      <button type="button" class="btn btn-primary" onclick="Novo()" id="btn_salvar">
-                        <i class="bi bi-plus-square"></i> Novo Produto
-                      </button>
-                      <button type="button" class="btn btn-primary" onclick="PesquisaAvancada()"><i class="bi bi-funnel-fill"></i> FILTRO</button>
+                      <button type="button" class="btn btn-primary" onclick="Novo()"><i class="bi bi-plus-square" style="margin-right: 5px"></i>Novo Pedido</button>
+                      <button type="button" class="btn btn-primary" onclick="PesquisaAvancada()"><span class="bi bi-funnel-fill"></span>&nbsp;&nbsp;FILTRO</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="table-responsive">
+                      <table id="tabela_consulta" class="table table-striped table-hover" style="font-size:12px; min-width: auto">
+                        <thead>
+                          <tr class="bg-light-blue color-palette">
+                            <th style="width: 1%"></th>
+                            <th style="width: 1%"></th>
+                            <th style="width: 1%"></th>
+                            <th style="width:11%; text-align:center; vertical-align:middle;">Código</th>
+                            <th style="width:11%; text-align:center; vertical-align:middle;">Nome</th>
+                            <th style="width:11%; text-align:center; vertical-align:middle; min-width: 250px">Descricao</th>
+                            <th style="width:11%; text-align:center; vertical-align:middle;">Valor</th>
+                            <th style="width:11%; text-align:center; vertical-align:middle;">Quantidade</th>
+                            <th style="width:11%; text-align:center; vertical-align:middle;">Categoria</th>
+                          </tr>
+                        </thead>
+                      </table>
                     </div>
                   </div>
                 </div>
@@ -264,127 +286,89 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="table-responsive">
-              <table id="tabela_consulta" class="table table-striped table-hover" style="font-size:12px; min-width: auto">
-                <thead>
-                  <tr class="bg-light-blue color-palette">
-                    <th style="width: 1%"></th>
-                    <th style="width: 1%"></th>
-                    <th style="width: 1%"></th>
-                    <th style="width:11%; text-align:center; vertical-align:middle;">Código</th>
-                    <th style="width:11%; text-align:center; vertical-align:middle;">Nome</th>
-                    <th style="width:11%; text-align:center; vertical-align:middle; min-width: 250px">Descricao</th>
-                    <th style="width:11%; text-align:center; vertical-align:middle;">Valor</th>
-                    <th style="width:11%; text-align:center; vertical-align:middle;">Quantidade</th>
-                    <th style="width:11%; text-align:center; vertical-align:middle;">Categoria</th>
-                  </tr>
-                </thead>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-      <div class="modal fade" id="novoProdutoModal" tabindex="-1" aria-labelledby="novoProdutoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content bg-dark">
-            <div class="modal-header bg-primary">
-              <h5 class="modal-title" id="titulo_modal_novo_produto">Adicionar Novo Produto</h5>
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body bg-white text-black">
-              <form>
-                <div class="row">
-                  <div class="col-md-6 mb-3">
-                    <label for="nome_produto" class="form-label">Nome <span style="color: red">*</span></label>
-                    <div class="input-group">
-                      <span class="input-group-text">
-                        <i class="bi bi-tag"></i>
-                      </span>
-                      <input type="text" class="form-control" id="nome_produto">
-                    </div>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="descricao_produto" class="form-label">Descrição <span style="color: red">*</span></label>
-                    <div class="input-group">
-                      <span class="input-group-text">
-                        <i class="bi bi-card-text"></i>
-                      </span>
-                      <input type="text" class="form-control" id="descricao_produto">
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6 mb-3">
-                    <div class="form-group">
-                      <label for="valor_produto" class="form-label">Valor <span style="color: red">*</span></label>
-                      <div class="input-group">
-                        <span class="input-group-text">
-                          <i class="bi bi-cash-stack"></i>
-                        </span>
-                        <input type="text" class="form-control" id="valor_produto">
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-md-6 mb-3">
-                    <label for="quantidade_produto" class="form-label">Quantidade <span style="color: red">*</span></label>
-                    <div class="input-group">
-                      <span class="input-group-text">
-                        <i class="bi bi-hash"></i>
-                      </span>
-                      <input type="number" class="form-control" id="quantidade_produto">
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6 mb-3">
-                    <label for="codigo_categoria_produto" class="form-label">Categoria do produto <span style="color: red">*</span></label>
-                    <select class="form-control select2" data-placeholder="Selecione" data-allow-clear="true" id="codigo_categoria_produto" name="codigo_categoria_produto" style="width: 100%;">
-                      <option value="">selecione</option>
-                      <?php
-                      $SQL = "SELECT id_categoria, nome_categoria
-                      FROM logistic_module.categoria_produtos 
-                      WHERE situacao = 1";
-                      $rsTipo_categoria_produto = mysqli_query($ConexaoMy, $SQL);
-                      while ($arTipo_categoria_produto = mysqli_fetch_assoc($rsTipo_categoria_produto)) {
-                        $arTipo_categoria_produto = array_map("utf8_encode", $arTipo_categoria_produto);
-                        echo "<option style='color:black; background-color: white' value='" . utf8_decode($arTipo_categoria_produto["id_categoria"]) . "'>" . utf8_decode($arTipo_categoria_produto["nome_categoria"]) . "</option>";
-                      }
-                      ?>
-                    </select>
-                  </div>
-                </div>
-            </div>
-            </form>
-            <div class="modal-footer bg-primary">
-              <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="">Fechar</button>
-              <button type="button" class="btn btn-info" id="btn_cadastrar" onclick="Salvar()">Cadastrar</button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
-
-  <div class="modal fade" id="filtroAvancado" tabindex="-1" aria-labelledby="filtroAvancadoLabel" aria-hidden="true">
+  <div class="modal fade" id="novoProdutoModal" tabindex="-1" aria-labelledby="novoProdutoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content bg-dark">
         <div class="modal-header bg-primary">
-          <h5 class="modal-title" id="titulo_filtro">Filtrar pesquisa</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title" id="titulo_modal_novo_produto">Adicionar Novo Produto</h5>
+          <button type="button" class="btn-close btn-close-white" onclick="window.location.reload();" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body bg-white text-black">
-          <div class="row">
-            <div class="col-md-6">
-              <h1>depois eu termino, to com preguiça</h1>
+          <form>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="nome_produto" class="form-label">Nome <span style="color: red">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-tag"></i>
+                  </span>
+                  <input type="text" class="form-control" id="nome_produto">
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="descricao_produto" class="form-label">Descrição <span style="color: red">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-card-text"></i>
+                  </span>
+                  <input type="text" class="form-control" id="descricao_produto">
+                </div>
+              </div>
             </div>
-          </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <div class="form-group">
+                  <label for="valor_produto" class="form-label">Valor <span style="color: red">*</span></label>
+                  <div class="input-group">
+                    <span class="input-group-text">
+                      <i class="bi bi-cash-stack"></i>
+                    </span>
+                    <input type="text" class="form-control" id="valor_produto">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="quantidade_produto" class="form-label">Quantidade <span style="color: red">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-hash"></i>
+                  </span>
+                  <input type="number" class="form-control" id="quantidade_produto">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="codigo_categoria_produto" class="form-label">Categoria do produto <span style="color: red">*</span></label>
+                <select class="form-control select2" data-placeholder="Selecione" data-allow-clear="true" id="codigo_categoria_produto" name="codigo_categoria_produto" style="width: 100%;">
+                  <option value="">selecione</option>
+                  <?php
+                  $SQL = "SELECT id_categoria, nome_categoria
+                      FROM logistic_module.categoria_produtos 
+                      WHERE situacao = 1";
+                  $rsTipo_categoria_produto = mysqli_query($ConexaoMy, $SQL);
+                  while ($arTipo_categoria_produto = mysqli_fetch_assoc($rsTipo_categoria_produto)) {
+                    $arTipo_categoria_produto = array_map("utf8_encode", $arTipo_categoria_produto);
+                    echo "<option style='color:black; background-color: white' value='" . utf8_decode($arTipo_categoria_produto["id_categoria"]) . "'>" . utf8_decode($arTipo_categoria_produto["nome_categoria"]) . "</option>";
+                  }
+                  ?>
+                </select>
+              </div>
+            </div>
+        </div>
+        </form>
+        <div class="modal-footer bg-primary">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="window.location.reload();">Fechar</button>
+          <button type="button" class="btn btn-info" id="btn_cadastrar" onclick="Salvar()">Cadastrar</button>
         </div>
       </div>
     </div>
   </div>
+
 
   <script>
     $("#valor_produto").mask("#00,00", { reverse: true });
@@ -607,7 +591,7 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
             $("#quantidade_produto").prop("disabled", flag_disabled == "1" ? false : true);
             $("#codigo_categoria_produto").prop("disabled", flag_disabled == "1" ? false : true);
             $("#novoProdutoModal").modal("show");
-            flag_disabled == "1" ? $("#titulo_modal_novo_produto").html("Detalhe do produto Cód: " + StringPad(codigo, "0000")) : $("#titulo_modal_novo_produto").html("Editação do produto Cód: " + StringPad(codigo, "0000"));
+            flag_disabled == "1" ? $("#titulo_modal_novo_produto").html("Editação do produto Cód: " + StringPad(codigo, "0000")) : $("#titulo_modal_novo_produto").html("Detalhe do produto Cód: " + StringPad(codigo, "0000"));
           } catch (erro) {
             alert("Não foi possível realizar esta operação! Contate a Skunby Tecnologia2222.");
             console.log(retorno);
