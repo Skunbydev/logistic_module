@@ -486,7 +486,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
       }
       function InativarCliente(codigo) {
         Swal.fire({
-          title: 'Tem certeza que deseja inativar este registro?',
+          title: 'Tem certeza que deseja inativar este Cliente?',
           showCancelButton: true,
           confirmButtonText: 'Sim',
           cancelButtonText: 'Não',

@@ -123,7 +123,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['categoria_id'])) {
 
 if (isset($_POST["metodo"]) && $_POST["metodo"] == "Carregar") {
   $arrayRetornoGeral = array();
-  $SQL = "SELECT * FROM pedidos 
+  $SQL = "SELECT *, CONCAT('R$ ', CAST(valor_total AS DECIMAL(10, 2))) AS valor_total
+          FROM pedidos
 					WHERE id_pedido = '" . $_POST["codigo"] . "'";
 
   $rsDadosPedidos = mysqli_query($ConexaoMy, $SQL);
