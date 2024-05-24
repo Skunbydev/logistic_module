@@ -20,6 +20,9 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == "Salvar") {
   $cep_cliente = $_POST["cep_cliente"];
   $quantidade_produto = $_POST["quantidade_produto"];
   $nome_produto = $_POST["nome_produto"];
+  $cidade_cliente = $_POST["cidade_cliente"];
+
+  $estado_cliente = $_POST["estado_cliente"];
   $valor_total_com_prefixo = $_POST["valor_total"];
   $valor_total = (float) str_replace('R$ ', '', $_POST["valor_total"]);
   $valor_total = str_replace(['R$ ', ','], ['', '.'], $valor_total_com_prefixo);
@@ -29,8 +32,8 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == "Salvar") {
   if ($id_pedido != "") {
     $SQL = "UPDATE INTO";
   } else {
-    $SQL = "INSERT INTO pedidos (codigo_categoria_produto, id_cliente_lista, endereco_cliente, numero_endereco_cliente, cep_cliente, quantidade_produto, nome_produto, valor_total, situacao) 
-    VALUES ('$codigo_categoria_produto', '$id_cliente_lista', '$endereco_cliente', '$numero_endereco_cliente', '$cep_cliente', '$quantidade_produto', '$nome_produto', '$valor_total', 1)";
+    $SQL = "INSERT INTO pedidos (codigo_categoria_produto, id_cliente_lista, endereco_cliente, numero_endereco_cliente, cep_cliente, cidade_cliente, estado_cliente, quantidade_produto, nome_produto, valor_total, situacao) 
+    VALUES ('$codigo_categoria_produto', '$id_cliente_lista', '$endereco_cliente', '$numero_endereco_cliente', '$cep_cliente', '$cidade_cliente', '$estado_cliente', '$quantidade_produto', '$nome_produto', '$valor_total', 1)";
 
     $rsAux = mysqli_query($ConexaoMy, $SQL);
 
@@ -59,7 +62,7 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == "Salvar") {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['client_id'])) {
   $client_id = intval($_POST['client_id']);
 
-  $SQL = "SELECT endereco_cliente_lista, numero_rua_cliente_lista, cep_cliente_lista FROM logistic_module.lista_clientes WHERE id_cliente_lista = ? AND situacao = 1";
+  $SQL = "SELECT endereco_cliente_lista, numero_rua_cliente_lista, cep_cliente_lista, cidade_cliente_lista, estado_cliente_lista FROM logistic_module.lista_clientes WHERE id_cliente_lista = ? AND situacao = 1";
   $stmt = $ConexaoMy->prepare($SQL);
   $stmt->bind_param('i', $client_id);
   $stmt->execute();
@@ -73,7 +76,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['client_id'])) {
       'success' => true,
       'address' => $row['endereco_cliente_lista'],
       'number' => utf8_encode($row['numero_rua_cliente_lista']),
-      'cep' => utf8_encode($row["cep_cliente_lista"])
+      'cep' => utf8_encode($row["cep_cliente_lista"]),
+      'cidade' => $row['cidade_cliente_lista'],
+      'estado' => $row['estado_cliente_lista'],
     ];
   } else {
     $response = [
@@ -147,10 +152,14 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == "InativarPedido") {
 
   if ((int) $_POST["codigo"] > 0) {
     $SQL = "UPDATE pedidos pd
-   JOIN estoque et ON pd.codigo_categoria_produto = et.codigo_categoria_produto
-   SET pd.situacao = '0', 
-       et.quantidade_produto = et.quantidade_produto + (SELECT quantidade_produto from pedidos WHERE id_pedido = 1)
-   WHERE pd.id_pedido = 1;";
+       JOIN estoque et ON pd.codigo_categoria_produto = et.codigo_categoria_produto
+       SET pd.situacao = '0', 
+           et.quantidade_produto = et.quantidade_produto + (
+               SELECT quantidade_produto 
+               FROM pedidos 
+               WHERE id_pedido = pd.id_pedido
+           )
+       WHERE pd.id_pedido = '" . $_POST["codigo"] . "'";
   }
   $rsAux = mysqli_query($ConexaoMy, $SQL);
   if ($rsAux) {
@@ -177,6 +186,8 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
     array('db' => 'pd.endereco_cliente', 'dt' => 5),
     array('db' => 'pd.numero_endereco_cliente', 'dt' => 6),
     array('db' => 'pd.cep_cliente', 'dt' => 7),
+    array('db' => 'pd.cidade_cliente', 'dt' => 8),
+    array('db' => 'pd.estado_cliente', 'dt' => 9),
   );
   $bindings = array();
   $limit = @$SSP->limit($_GET, $columns);
@@ -187,7 +198,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
   $resTotalLength = 0;
   $recordsFiltered = 0;
 
-  $SQL = "SELECT pd.id_pedido, pd.nome_produto, pd.id_cliente_lista, pd.valor_total, pd.quantidade_produto, pd.endereco_cliente, pd.numero_endereco_cliente, pd.cep_cliente, lc.nome_cliente_lista
+  $SQL = "SELECT pd.id_pedido, pd.nome_produto, pd.id_cliente_lista, pd.valor_total, pd.quantidade_produto, pd.endereco_cliente, pd.numero_endereco_cliente, pd.cep_cliente, pd.cidade_cliente, pd.estado_cliente, lc.nome_cliente_lista
   FROM pedidos pd
   LEFT JOIN lista_clientes lc ON lc.id_cliente_lista = pd.id_cliente_lista
   WHERE pd.situacao = 1";
@@ -219,12 +230,14 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
     $dados[$i][] = '<span style="width: 100px;">' . $Aux["id_pedido"] . '</span>';
     // $dados[$i][] = "<span style='display: block; margin-left: auto; margin-right: auto; text-align: center; min-width: 600px;'>" . $Aux["nome_cliente_lista"] . "</span>";
     $dados[$i][] = $Aux["nome_cliente_lista"];
-    $dados[$i][] = '<span style="width: 100px;">' . $Aux["endereco_cliente"] . '</span>';
-    $dados[$i][] = '<span style="width: 100px;">' . $Aux["numero_endereco_cliente"] . '</span>';
-    $dados[$i][] = '<span style="width: 100px;">' . $Aux["cep_cliente"] . '</span>';
-    $dados[$i][] = '<span style="width: 100px;">' . $Aux["nome_produto"] . '</span>';
-    $dados[$i][] = '<span style="width: 100px;">' . $Aux["quantidade_produto"] . '</span>';
-    $dados[$i][] = '<span style="width: 100px;">' . 'R$ ' . $Aux["valor_total"] . '</span>';
+    $dados[$i][] = '<span style="text-align: center">' . $Aux["endereco_cliente"] . '</span>';
+    $dados[$i][] = '<span style="text-align: center">' . $Aux["numero_endereco_cliente"] . '</span>';
+    $dados[$i][] = '<span style="text-align: center">' . $Aux["cep_cliente"] . '</span>';
+    $dados[$i][] = '<span style="text-align: center">' . $Aux["cidade_cliente"] . '</span>';
+    $dados[$i][] = '<span style="text-align: center">' . $Aux["estado_cliente"] . '</span>';
+    $dados[$i][] = '<span style="text-align: center">' . $Aux["nome_produto"] . '</span>';
+    $dados[$i][] = '<span style="text-align: center">' . $Aux["quantidade_produto"] . '</span>';
+    $dados[$i][] = '<span style="text-align: center">' . 'R$ ' . $Aux["valor_total"] . '</span>';
     $i++;
   }
   $recordsTotal = $i;
@@ -251,7 +264,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
 </head>
 
 <body>
-  <?php include 'layout2.php' ?>
+  <?php include 'layout.php' ?>
   <div class="wrapper">
     <div class="main-content">
       <div class="flex-grow-1 p-3">
@@ -298,9 +311,11 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
                             <th style="width:11%; text-align:center; vertical-align:middle; min-width: 250px">Endereço</th>
                             <th style="width:11%; text-align:center; vertical-align:middle;">Numero</th>
                             <th style="width:11%; text-align:center; vertical-align:middle;">Cep</th>
-                            <th style="width:11%; text-align:center; vertical-align:middle;">Nome produto</th>
+                            <th style="width:11%; text-align:center; vertical-align:middle;">Cidade</th>
+                            <th style="width:11%; text-align:center; vertical-align:middle;">Estado</th>
+                            <th style="min-width:200px; text-align:center; vertical-align:middle;">Nome produto</th>
                             <th style="width:11%; text-align:center; vertical-align:middle;">Quantidade</th>
-                            <th style="width:11%; text-align:center; vertical-align:middle;">Valor Total</th>
+                            <th style="min-width:150px; text-align:center; vertical-align:middle;">Valor Total</th>
                           </tr>
                         </thead>
                       </table>
@@ -361,6 +376,16 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
                 </div>
                 <div class="row">
                   <div class="col-md-6 mb-3">
+                    <label for="cidade_cliente" class="form-label">Cidade <span style="color: red">*</span></label>
+                    <input type="text" class="form-control" id="cidade_cliente" placeholder="Digite a cidade do cliente">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="estado_cliente" class="form-label">Estado cliente <span style="color: red">*</span></label>
+                    <input type="text" class="form-control" id="estado_cliente" class="form-control" placeholder="Digite a cidade do cliente">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
                     <input type="hidden" id="hid_codigoCategoria">
                     <label for="codigo_categoria_produto" class="form-label">Categoria do produto <span style="color: red">*</span></label>
                     <select class="form-control select2" data-placeholder="Selecione" data-allow-clear="true" id="codigo_categoria_produto" name="codigo_categoria_produto" style="width: 100%;" onchange="fetchProdutos()">
@@ -396,7 +421,6 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
                   <div class="col-md-6 mb-3">
                     <label for="quantidade_produto" class="form-label">Quantidade ofertada <span style="color: red">*</span></label>
                     <input type="number" class="form-control" id="quantidade_produto" class="form-control" placeholder="Insira a quantidade desejada pelo cliente" onchange="calcularValorTotal()">
-
                   </div>
                   <div class="col-md-6 mb-3">
                     <label for="valor_total" class="form-label">Valor TOTAL<span style="color: red">*</span></label>
@@ -547,6 +571,8 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
                   document.getElementById('endereco_cliente').innerHTML = response.address;
                   document.getElementById('numero_endereco_cliente').value = response.number;
                   document.getElementById('cep_cliente').value = response.cep;
+                  document.getElementById('cidade_cliente').value = response.cidade;
+                  document.getElementById('estado_cliente').value = response.estado;
                 } else {
                   document.getElementById('endereco_cliente').innerHTML = 'Endereço não encontrado';
                 }
@@ -606,6 +632,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
                   document.getElementById('valor_produto_banco').value = 'R$ ' + produtoSelecionado.valor_produto;
                   document.getElementById('quantidade_produto_banco').value = produtoSelecionado.quantidade_produto;
 
+
                 } else {
                   var option = document.createElement('option');
                   option.textContent = 'Nenhum produto disponível';
@@ -664,6 +691,8 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
       //$("#endereco_cliente").val("");
       $("#numero_endereco_cliente").val("");
       $("#cep_cliente").val("");
+      $("#cidade_cliente").val("");
+      $("#estado_cliente").val("");
       $("#codigo_categoria_produto").select2("val", "");
       $("#nome_produto").select2("val", "");
       $("#quantidade_produto").val("");
@@ -705,6 +734,24 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
           icon: 'warning'
         }).then(() => {
           $("#cep_cliente").focus();
+        });
+        return false;
+      }
+      if ($("#estado_cliente").val() == "" || $("#estado_cliente").val() == null) {
+        Swal.fire({
+          title: 'Informe o estado do cliente',
+          icon: 'warning'
+        }).then(() => {
+          $("#estado_cliente").focus();
+        });
+        return false;
+      }
+      if ($("#cidade_cliente").val() == "" || $("#cidade_cliente").val() == null) {
+        Swal.fire({
+          title: 'Informe a cidade do cliente',
+          icon: 'warning'
+        }).then(() => {
+          $("#cidade_cliente").focus();
         });
         return false;
       }
@@ -767,6 +814,8 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
       parametros.append("endereco_cliente", $("#endereco_cliente").val());
       parametros.append("numero_endereco_cliente", $("#numero_endereco_cliente").val());
       parametros.append("cep_cliente", $("#cep_cliente").val());
+      parametros.append("cidade_cliente", $("#cidade_cliente").val());
+      parametros.append("estado_cliente", $("#estado_cliente").val());
       parametros.append("codigo_categoria_produto", $("#codigo_categoria_produto").val());
       parametros.append("nome_produto", $("#nome_produto").val());
       parametros.append("quantidade_produto", $("#quantidade_produto").val());
@@ -785,7 +834,6 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
           $('#div_load_consulta').hide();
           try {
             var arRetorno = JSON.parse(retorno);
-            alert(arRetorno[1]);
             if (arRetorno[0] == "1") {
               Swal.fire({
                 title: 'Pedido cadastrado com sucesso!',
@@ -845,6 +893,8 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
             $("#endereco_cliente").val(arRetorno.endereco_cliente);
             $("#numero_endereco_cliente").val(arRetorno.numero_endereco_cliente);
             $("#cep_cliente").val(arRetorno.cep_cliente);
+            $("#estado_cliente").val(arRetorno.estado_cliente);
+            $("#cidade_cliente").val(arRetorno.cidade_cliente);
             $("#codigo_categoria_produto").select2("val", arRetorno.codigo_categoria_produto);
             $("#nome_produto").val(arRetorno.nome_produto);
             $("#quantidade_produto").val(arRetorno.quantidade_produto);
@@ -855,6 +905,8 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
             $("#endereco_cliente").prop("disabled", flag_disabled == "1" ? false : true);
             $("#numero_endereco_cliente").prop("disabled", flag_disabled == "1" ? false : true);
             $("#cep_cliente").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#cidade_cliente").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#estado_cliente").prop("disabled", flag_disabled == "1" ? false : true);
             $("#codigo_categoria_produto").prop("disabled", flag_disabled == "1" ? false : true);
             $("#nome_produto").prop("disabled", flag_disabled == "1" ? false : true);
             $("#quantidade_produto").prop("disabled", flag_disabled == "1" ? false : true);
@@ -886,6 +938,10 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
         cancelButtonText: 'Não',
         icon: 'question'
       }).then((result) => {
+        Swal.fire({
+          title: 'Pedido inativo com sucesso!',
+          icon: 'success'
+        });
         if (result.isConfirmed) {
           var parametros = new FormData();
           parametros.append("metodo", "InativarPedido");
@@ -904,7 +960,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
               $('#div_load_consulta').hide();
               try {
                 var arRetorno = JSON.parse(retorno);
-                alert(arRetorno[1]);
+
 
                 if (arRetorno[0] == "1") {
                   GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();

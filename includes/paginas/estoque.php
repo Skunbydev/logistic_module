@@ -128,16 +128,24 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
   );
   $total_valor = 0;
   $total_quantidade = 0;
+
   foreach ($dados as $produto) {
     $valor_produto = str_replace('R$: ', '', $produto[6]);
     $valor_produto = str_replace(',', '.', $valor_produto);
+
     if (is_numeric($valor_produto)) {
-      $total_valor += floatval($valor_produto);
+      $valor_produto = floatval($valor_produto);
+    } else {
+      $valor_produto = 0;
     }
 
     if (is_numeric($produto[7])) {
-      $total_quantidade += intval($produto[7]);
+      $quantidade_produto = intval($produto[7]);
+    } else {
+      $quantidade_produto = 0;
     }
+    $total_valor += $valor_produto * $quantidade_produto;
+    $total_quantidade += $quantidade_produto;
   }
 
   $dados[$i][6] = 'R$: ' . number_format($total_valor, 2, ',', '.');
@@ -227,7 +235,7 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == 'Salvar') {
 
 <body>
 
-  <?php include './layout2.php'; ?>
+  <?php include './layout.php'; ?>
   <div class="wrapper">
     <div class="main-content">
       <div class="flex-grow-1 p-3">

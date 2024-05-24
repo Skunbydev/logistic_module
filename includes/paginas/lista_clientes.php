@@ -46,6 +46,8 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == "Salvar") {
   $endereco_cliente_lista = $_POST["endereco_cliente_lista"];
   $cep_cliente_lista = $_POST["cep_cliente_lista"];
   $numero_rua_cliente_lista = $_POST["numero_rua_cliente_lista"];
+  $cidade_cliente_lista = $_POST["cidade_cliente_lista"];
+  $estado_cliente_lista = $_POST["estado_cliente_lista"];
 
   if ($id_cliente_lista != "") {
     $SQL = "UPDATE lista_clientes SET 
@@ -54,14 +56,16 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == "Salvar") {
     telefone_cliente_lista = '$telefone_cliente_lista', 
     endereco_cliente_lista = '$endereco_cliente_lista',
     cep_cliente_lista = '$cep_cliente_lista',
-    numero_rua_cliente_lista = '$numero_rua_cliente_lista'
+    numero_rua_cliente_lista = '$numero_rua_cliente_lista',
+    cidade_cliente_lista = '$cidade_cliente_lista',
+    estado_cliente_lista = '$estado_cliente_lista'
     WHERE id_cliente_lista = '$id_cliente_lista'";
 
 
     $rsAux = mysqli_query($ConexaoMy, $SQL);
 
     if ($rsAux) {
-      $arRetorno[0] = "1";
+      $arRetorno[0] = "3";
       $arRetorno[1] = "Cliente editado com sucesso";
       $arRetorno[2] = $SQL;
       DBClose($ConexaoMy);
@@ -75,8 +79,9 @@ if (isset($_POST["metodo"]) && $_POST["metodo"] == "Salvar") {
     }
 
   }
+
   $SQL = "INSERT INTO lista_clientes (nome_cliente_lista, email_cliente_lista, telefone_cliente_lista, endereco_cliente_lista, cep_cliente_lista,
-  numero_rua_cliente_lista, situacao) VALUES ('$nome_cliente_lista', '$email_cliente_lista', '$telefone_cliente_lista', '$endereco_cliente_lista', '$cep_cliente_lista', '$numero_rua_cliente_lista',  1)";
+  numero_rua_cliente_lista, cidade_cliente_lista, estado_cliente_lista,  situacao) VALUES ('$nome_cliente_lista', '$email_cliente_lista', '$telefone_cliente_lista', '$endereco_cliente_lista', '$cep_cliente_lista', '$numero_rua_cliente_lista', '$cidade_cliente_lista', '$estado_cliente_lista',  1)";
 
   $rsAux = mysqli_query($ConexaoMy, $SQL);
   if ($rsAux) {
@@ -114,7 +119,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
   $resTotalLength = 0;
   $recordsFiltered = 0;
 
-  $SQL = "SELECT lsc.id_cliente_lista, lsc.nome_cliente_lista, lsc.email_cliente_lista, lsc.telefone_cliente_lista, lsc.endereco_cliente_lista
+  $SQL = "SELECT lsc.id_cliente_lista, lsc.nome_cliente_lista, lsc.email_cliente_lista, lsc.telefone_cliente_lista, lsc.endereco_cliente_lista, lsc.cidade_cliente_lista, lsc.estado_cliente_lista
   FROM lista_clientes lsc
   WHERE lsc.situacao = 1";
 
@@ -155,6 +160,8 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
     $dados[$i][] = $Aux["email_cliente_lista"];
     $dados[$i][] = $Aux["telefone_cliente_lista"];
     $dados[$i][] = $Aux["endereco_cliente_lista"];
+    $dados[$i][] = $Aux["cidade_cliente_lista"];
+    $dados[$i][] = $Aux["estado_cliente_lista"];
     $i++;
   }
   $recordsTotal = $i;
@@ -183,7 +190,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
 </head>
 
 <body>
-  <?php include 'layout2.php'; ?>
+  <?php include 'layout.php'; ?>
   <div class="wrapper">
     <div class="main-content">
       <div class="flex-grow-1 p-3">
@@ -200,7 +207,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
                   LISTA DE CLIENTES
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <a class="hint--right" data-hint="Pesquisar Avançada" style="cursor:pointer;" onclick="PesquisaAvancada()">
-                    <i title='Editar pedido' class="bi bi-search" style="width: 15px"></i>
+                    <i title='Editar Cliente' class="bi bi-search" style="width: 15px"></i>
                   </a>
                 </h3>
                 <div class="card-tools">
@@ -231,6 +238,8 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
                             <th style="width:11%; text-align:center; vertical-align:middle; min-width: 200px">Email cliente</th>
                             <th style="width:11%; text-align:center; vertical-align:middle;">Telefone</th>
                             <th style="width:11%; text-align:center; vertical-align:middle; min-width: 200px">Endereco</th>
+                            <th style="width:11%; text-align:center; vertical-align:middle; min-width: 200px">Cidade</th>
+                            <th style="width:11%; text-align:center; vertical-align:middle; min-width: 200px">Estado</th>
                           </tr>
                         </thead>
                       </table>
@@ -279,6 +288,16 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
                   <div class="col-md-6 mb-3">
                     <label for="numero_rua_cliente_lista" class="form-label">Número <span style="color: red">*</span></label>
                     <input type="text" class="form-control" id="numero_rua_cliente_lista">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="cidade_cliente_lista" class="form-label">Cidade <span style="color: red">*</span></label>
+                    <input type="text" class="form-control" id="cidade_cliente_lista">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="estado_cliente_lista" class="form-label">Estado <span style="color: red">*</span></label>
+                    <input type="text" class="form-control" id="estado_cliente_lista">
                   </div>
                 </div>
               </form>
@@ -412,6 +431,8 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
       $("#endereco_cliente_lista").val("");
       $("#cep_cliente_lista").val("");
       $("#numero_rua_cliente_lista").val("");
+      $("#cidade_cliente_lista").val("");
+      $("#estado_cliente_lista").val("");
     }
 
     function validarCampo() {
@@ -450,8 +471,25 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
         $("#endereco_cliente_lista").focus();
         return false;
       }
+      if ($("#estado_cliente_lista").val() == "" || $("#estado_cliente_lista").val() == null) {
+        Swal.fire({
+          title: 'Informe o estado do Cliente',
+          icon: 'error'
+        });
+        $("#estado_cliente_lista").focus();
+        return false;
+      }
+      if ($("#cidade_cliente_lista").val() == "" || $("#cidade_cliente_lista").val() == null) {
+        Swal.fire({
+          title: 'Informe a cidade do Cliente',
+          icon: 'error'
+        });
+        $("#cidade_cliente_lista").focus();
+        return false;
+      }
       return true;
     }
+
 
     function Salvar() {
       $("#novoClienteListaModal").modal("show");
@@ -470,6 +508,9 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
       parametros.append("endereco_cliente_lista", $("#endereco_cliente_lista").val());
       parametros.append("cep_cliente_lista", $("#cep_cliente_lista").val());
       parametros.append("numero_rua_cliente_lista", $("#numero_rua_cliente_lista").val());
+      parametros.append("cidade_cliente_lista", $("#cidade_cliente_lista").val());
+      parametros.append("estado_cliente_lista", $("#estado_cliente_lista").val());
+
 
       $.ajax({
         type: "POST",
@@ -486,7 +527,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
             var arRetorno = JSON.parse(retorno);
             if (arRetorno[0] == "1") {
               Swal.fire({
-                title: 'Pedido cadastrado com sucesso!',
+                title: 'Cliente cadastrado com sucesso!',
                 icon: 'success'
               }).then(() => {
                 $("#novoClienteListaModal").hide();
@@ -494,7 +535,17 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
                 GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
                 window.location.reload();
               });
-            } else if (arRetorno[0] === 9999) {
+            } else if (arRetorno[0] == "3") {
+              Swal.fire({
+                title: 'Cliente editado com sucesso!',
+                icon: 'success'
+              }).then(() => {
+                $("#novoClienteListaModal").hide();
+                GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
+                window.location.reload();
+              });
+            }
+            else if (arRetorno[0] === 9999) {
               console.log("deslogado, safado");
             } else {
               console.log(arRetorno);
@@ -509,7 +560,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
     }
     function InativarCliente(codigo) {
       Swal.fire({
-        title: 'Tem certeza que deseja inativar este registro?',
+        title: 'Tem certeza que deseja inativar este Cliente?',
         showCancelButton: true,
         confirmButtonText: 'Sim',
         cancelButtonText: 'Não',
@@ -533,7 +584,7 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
               $('#div_load_consulta').hide();
               try {
                 var arRetorno = JSON.parse(retorno);
-                alert(arRetorno[1]);
+
 
                 if (arRetorno[0] == "1") {
                   GLTabela.ajax.url("<?php echo $_SERVER['PHP_SELF']; ?>?metodo=Consultar&filtro=" + JSON.stringify(GLFiltro)).load();
@@ -589,6 +640,9 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
             $("#endereco_cliente_lista").val(arRetorno.endereco_cliente_lista);
             $("#cep_cliente_lista").val(arRetorno.cep_cliente_lista);
             $("#numero_rua_cliente_lista").val(arRetorno.numero_rua_cliente_lista);
+            $("#cidade_cliente_lista").val(arRetorno.cidade_cliente_lista);
+            $("#estado_cliente_lista").val(arRetorno.estado_cliente_lista);
+
 
             $("#nome_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
             $("#email_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
@@ -596,6 +650,9 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
             $("#endereco_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
             $("#cep_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
             $("#numero_rua_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#cidade_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
+            $("#estado_cliente_lista").prop("disabled", flag_disabled == "1" ? false : true);
+
             $("#novoClienteListaModal").modal("show");
             flag_disabled == "1" ? $("#titulo_modal_novo_lista").html("Editação do cliente Cód: " + StringPad(codigo, "0000")) : $("#titulo_modal_novo_lista").html("Detalhe do cliente Cód: " + StringPad(codigo, "0000"));
             if (flag_disabled == 0) {
@@ -624,7 +681,9 @@ if (isset($_GET['metodo']) && trim($_GET['metodo']) == "Consultar") {
           if (xhr.readyState === 4 && xhr.status === 200) {
             var response = JSON.parse(xhr.responseText);
             if (!response.erro) {
-              document.getElementById('endereco_cliente_lista').value = response.logradouro + ', ' + response.bairro + ', ' + response.localidade + ' - ' + response.uf;
+              document.getElementById('endereco_cliente_lista').value = response.logradouro + ', ' + response.bairro;
+              document.getElementById('estado_cliente_lista').value = response.uf;
+              document.getElementById('cidade_cliente_lista').value = response.localidade;
             } else {
               alert('CEP não encontrado.');
               document.getElementById('endereco_cliente_lista').value = '';

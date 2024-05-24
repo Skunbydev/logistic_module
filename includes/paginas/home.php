@@ -48,7 +48,7 @@ $ConexaoMy = DBConnectMy(); ?>
 
 <body>
 
-  <?php include './layout2.php'; ?>
+  <?php include './layout.php'; ?>
   <div class="wrapper">
     <div class="main-content">
       <div class="flex-grow-1 p-3">
